@@ -1,0 +1,301 @@
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+        let currentStep = 0;
+
+        const steps = document.querySelectorAll(".step");
+        const indicators = document.querySelectorAll(".step-item");
+        const form = document.querySelector("form");
+
+        function showStep(step) {
+
+            steps.forEach((s, i) => {
+                s
+                    .classList
+                    .toggle("d-none", i !== step);
+            });
+
+            indicators.forEach((ind, i) => {
+                ind
+                    .classList
+                    .toggle("active", i <= step);
+            });
+
+            document
+                .getElementById("progressBar")
+                .style
+                .width = ((step + 1) / steps.length * 100) + "%";
+
+        }
+
+        /* ======================
+VALIDASI STEP
+====================== */
+
+        function validateStep(step) {
+
+            const inputs = steps[step].querySelectorAll("input, select, textarea");
+
+            for (let input of inputs) {
+
+                if (input.hasAttribute("required") && !input.value) {
+
+                    alert("Silakan isi semua pertanyaan sebelum lanjut.");
+                    input.focus();
+                    return false;
+
+                }
+
+            }
+
+            return true;
+
+        }
+
+        /* ======================
+NEXT BUTTON
+====================== */
+
+        document
+            .querySelectorAll(".next")
+            .forEach(btn => {
+
+                btn.addEventListener("click", function () {
+
+                    if (!validateStep(currentStep)) {
+                        return;
+                    }
+
+                    const punyaUsaha = document.getElementById("punya_usaha");
+
+                    if (currentStep === 0 && punyaUsaha && punyaUsaha.value === "tidak") {
+                        currentStep = 4;
+                    } else {
+                        currentStep++;
+                    }
+
+                    if (currentStep >= steps.length) {
+                        currentStep = steps.length - 1;
+                    }
+
+                    showStep(currentStep);
+
+                });
+
+            });
+
+        /* ======================
+BACK BUTTON
+====================== */
+
+        document
+            .querySelectorAll(".back")
+            .forEach(btn => {
+
+                btn.addEventListener("click", function () {
+
+                    currentStep--;
+
+                    if (currentStep < 0) {
+                        currentStep = 0;
+                    }
+
+                    showStep(currentStep);
+
+                });
+
+            });
+
+        showStep(currentStep);
+
+        /* ======================
+ALAMAT USAHA LAINNYA
+====================== */
+
+        const alamatUsaha = document.getElementById("alamat_usaha");
+
+        if (alamatUsaha) {
+
+            alamatUsaha.addEventListener("change", function () {
+
+                let lainnyaInput = document.getElementById("alamat_lainnya");
+
+                if (this.value === "Lainnya") {
+                    lainnyaInput
+                        .classList
+                        .remove("d-none");
+                } else {
+                    lainnyaInput
+                        .classList
+                        .add("d-none");
+                }
+
+            });
+
+        }
+
+        /* ======================
+CHECKBOX MEDIA KOMUNITAS
+====================== */
+
+        function toggleInput(checkId, inputId) {
+
+            const check = document.getElementById(checkId);
+            const input = document.getElementById(inputId);
+
+            if (!check) 
+                return;
+            
+            check.addEventListener("change", function () {
+
+                if (this.checked) {
+                    input
+                        .classList
+                        .remove("d-none");
+                } else {
+                    input
+                        .classList
+                        .add("d-none");
+                    input.value = "";
+                }
+
+            });
+
+        }
+
+        toggleInput("wa_check", "wa_input");
+        toggleInput("tg_check", "tg_input");
+        toggleInput("dc_check", "dc_input");
+        toggleInput("fb_check", "fb_input");
+        toggleInput("ig_check", "ig_input");
+        toggleInput("x_check", "x_input");
+        toggleInput("web_check", "web_input");
+        toggleInput("lain_check", "lain_input");
+
+        form.addEventListener("submit", function () {
+
+            /* ======================
+                                                                                                                                ALAMAT LAINNYA
+                                                                                                                                ====================== */
+            let select = document.getElementById("alamat_usaha");
+            let lainnya = document.getElementById("alamat_lainnya");
+
+            if (select && select.value === "Lainnya" && lainnya.value !== "") {
+                select.value = lainnya.value;
+            }
+
+            /* ======================
+                                                                                                                                MEDIA KOMUNITAS DETAIL
+                                                                                                                                ====================== */
+            let detail = [];
+
+            const wa_input = document.getElementById("wa_input");
+            const tg_input = document.getElementById("tg_input");
+            const dc_input = document.getElementById("dc_input");
+            const fb_input = document.getElementById("fb_input");
+            const ig_input = document.getElementById("ig_input");
+            const x_input = document.getElementById("x_input");
+            const web_input = document.getElementById("web_input");
+            const lain_input = document.getElementById("lain_input");
+
+            if (wa_input && wa_input.value.trim() !== "") 
+                detail.push("Whatsapp:" + wa_input.value);
+            
+            if (tg_input && tg_input.value.trim() !== "") 
+                detail.push("Telegram:" + tg_input.value);
+            
+            if (dc_input && dc_input.value.trim() !== "") 
+                detail.push("Discord:" + dc_input.value);
+            
+            if (fb_input && fb_input.value.trim() !== "") 
+                detail.push("Facebook:" + fb_input.value);
+            
+            if (ig_input && ig_input.value.trim() !== "") 
+                detail.push("Instagram:" + ig_input.value);
+            
+            if (x_input && x_input.value.trim() !== "") 
+                detail.push("X:" + x_input.value);
+            
+            if (web_input && web_input.value.trim() !== "") 
+                detail.push("Website:" + web_input.value);
+            
+            if (lain_input && lain_input.value.trim() !== "") 
+                detail.push("Lainnya:" + lain_input.value);
+            
+            document
+                .getElementById("media_detail")
+                .value = detail.join(" | ");
+
+        });
+
+        /* ======================
+DROPDOWN USAHA
+====================== */
+
+        function setupDropdown(kategoriId, jenisId) {
+
+            const kategori = document.getElementById(kategoriId);
+            const jenis = document.getElementById(jenisId);
+
+            if (!kategori) 
+                return;
+            
+            kategori.addEventListener("change", function () {
+
+                let pilih = this.value;
+
+                jenis.innerHTML = '<option value="">Pilih Jenis Usaha</option>';
+
+                if (dataUsaha[pilih]) {
+
+                    dataUsaha[pilih].forEach(function (item) {
+
+                        let option = document.createElement("option");
+
+                        option.value = item;
+                        option.text = item;
+
+                        jenis.appendChild(option);
+
+                    });
+
+                }
+
+            });
+
+        }
+
+        setupDropdown("kategori", "jenis_usaha");
+        setupDropdown("kategori_teman", "jenis_usaha_teman");
+
+    });
+
+    document
+        .getElementById("formKuesioner")
+        .addEventListener("click", function () {
+            console.log("TOMBOL DIKLIK");
+            Swal
+                .fire({
+                    title: "Kirim Kuesioner?",
+                    text: "Pastikan data yang diisi sudah benar",
+                    icon: "question",
+                    showCancelButton: true,
+                    confirmButtonColor: "#F79039",
+                    cancelButtonColor: "#6c757d",
+                    confirmButtonText: "Ya, kirim",
+                    cancelButtonText: "Periksa lagi"
+                })
+                .then((result) => {
+
+                    if (result.isConfirmed) {
+                        document
+                            .getElementById("formKuesioner")
+                            .submit();
+                    }
+
+                });
+
+        });
+</script>
