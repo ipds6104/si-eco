@@ -2,430 +2,224 @@
 
 @section('content')
 
-    <div class="container-fluid px-4" style = "margin-top:90px;">
+<div class="container-fluid px-4" style="margin-top:90px; margin-bottom: 50px;">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3 class="fw-bold text-dark"><i class="fas fa-edit me-2 text-warning"></i>Edit Data Responden</h3>
+        <a href="{{ route('kues.jawaban') }}" class="btn btn-secondary shadow-sm">
+            <i class="fas fa-arrow-left me-1"></i> Kembali
+        </a>
+    </div>
 
-    <h3 class="mb-4">Edit Data Responden</h3>
+    <div class="card shadow-sm border-0 rounded-4">
+        <div class="card-body p-4 p-md-5">
+            <form action="{{ route('kues.update', $data->id) }}" method="POST" id="editForm">
+                @csrf
+                @method('PUT')
 
-    <div class="card shadow">
+                {{-- SECTION I: IDENTITAS --}}
+                <div class="section-title mb-4 bg-light p-3 border-start border-warning border-5 rounded-end shadow-sm">
+                    <h5 class="mb-0 fw-bold text-dark">I. INFORMASI RESPONDEN</h5>
+                </div>
 
-    <div class="card-body">
-
-    <form action="{{ route('kues.update',$data->id) }}" method="POST">
-
-    @csrf
-    @method('PUT')
-{{-- BLOK I --}}
-<h5 class="mb-3">BLOK I. INFORMASI UMUM</h5>
-
-<div class="mb-3">
-    <label>Nama</label>
-    <input
-        type="text"
-        name="nama"
-        class="form-control"
-        value="{{ $data->nama }}"
-        required="required"></div>
-
-    <div class="mb-3">
-        <label>NPM</label>
-        <input type="text" name="npm" class="form-control" value="{{ $data->npm }}"></div>
-
-        <div class="mb-3">
-            <label>No HP</label>
-            <input type="text" name="no_hp" class="form-control" value="{{ $data->no_hp }}"></div>
-
-            <div class="mb-3">
-                <label>Asal Fakultas</label>
-                <input
-                    type="text"
-                    name="fakultas"
-                    class="form-control"
-                    value="{{ $data->fakultas }}"></div>
-
-            <div class="mb-3">
-                            <label>Apakah Anda memiliki usaha (offline atau online)?</label>
-                            <select name="punya_usaha" class="form-control">
-
-                                <option value="ya" {{ $data->punya_usaha == 'ya' ? 'selected' : '' }}>
-                                    Ya
-                                </option>
-
-                                <option value="tidak" {{ $data->punya_usaha == 'tidak' ? 'selected' : '' }}>
-                                    Tidak
-                                </option>
-
+                <div class="row g-3 mb-5">
+                    <div class="col-md-12">
+                        <div class="form-group mb-3">
+                            <label class="fw-bold small text-muted text-uppercase mb-1">Nama Lengkap</label>
+                            <input type="text" name="nama" class="form-control" value="{{ $data->nama }}" required>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group mb-3">
+                            <label class="fw-bold small text-muted text-uppercase mb-1">NIK (16 Digit)</label>
+                            <input type="text" name="nik" class="form-control" value="{{ $data->nik }}" maxlength="16" pattern="\d{16}" required>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group mb-3">
+                            <label class="fw-bold small text-muted text-uppercase mb-1">Nomor HP / WhatsApp</label>
+                            <input type="text" name="no_hp" class="form-control" value="{{ $data->no_hp }}" required>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group mb-3">
+                            <label class="fw-bold small text-muted text-uppercase mb-1">Kategori Responden</label>
+                            <select name="kategori_responden" class="form-select">
+                                <option value="Mahasiswa" {{ $data->kategori_responden == 'Mahasiswa' ? 'selected' : '' }}>Mahasiswa</option>
+                                <option value="Wiraswasta" {{ $data->kategori_responden == 'Wiraswasta' ? 'selected' : '' }}>Wiraswasta / Pemilik Usaha</option>
+                                <option value="Pegawai Negeri" {{ $data->kategori_responden == 'Pegawai Negeri' ? 'selected' : '' }}>Pegawai Negeri / BUMN</option>
+                                <option value="Pegawai Swasta" {{ $data->kategori_responden == 'Pegawai Swasta' ? 'selected' : '' }}>Pegawai Swasta</option>
+                                <option value="Lainnya" {{ $data->kategori_responden == 'Lainnya' ? 'selected' : '' }}>Lainnya</option>
                             </select>
                         </div>
-
-               
-                    <hr>
-
-                        {{-- BLOK II --}}
-                        <h5 class="mb-3">BLOK II. INFORMASI PELAKU USAHA EKONOMI</h5>
-
-                         <div class="mb-3">
-                        <label>Apa kegiatan utama usaha/perusahaan</label>
-                        <input
-                            type="text"
-                            name="kegiatan_utama"
-                            class="form-control"
-                            value="{{ $data->kegiatan_utama }}"></div>
-
-
-                        <div class="mb-3">
-                            <label>Pilih salah satu sesuai usaha Anda</label>
-                            <select name="jenis_usaha" class="form-control">
-
-                                <option value="1" {{ $data->jenis_usaha == '1' ? 'selected' : '' }}>
-                                    1. produksi barang/menjual barang yang diproduksi sendiri
-                                </option>
-
-                                <option value="2" {{ $data->punya_usaha == '2' ? 'selected' : '' }}>
-                                    2. penjualan barang uang dibeli dari usaha/perusahaan/pihak lain
-                                </option>
-
-                                <option value="3" {{ $data->punya_usaha == '3' ? 'selected' : '' }}>
-                                   3. penyediaan jasa makanan minuman yang siap disantap ditempat atau dibawa pulang
-                                </option>
-
-                                <option value="4" {{ $data->punya_usaha == '4' ? 'selected' : '' }}>
-                                   4. penyediaan jasa lainnya
-                                </option>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group mb-3">
+                            <label class="fw-bold small text-muted text-uppercase mb-1">Punya Usaha?</label>
+                            <select name="punya_usaha" id="punya_usaha" class="form-select border-warning">
+                                <option value="ya" {{ $data->punya_usaha == 'ya' ? 'selected' : '' }}>Ya, Memiliki Usaha</option>
+                                <option value="tidak" {{ $data->punya_usaha == 'tidak' ? 'selected' : '' }}>Tidak Memiliki Usaha</option>
                             </select>
                         </div>
+                    </div>
+                </div>
 
-                            <div class="mb-3">
-                            <label>Dimana usaha tersebut biasa dilakukan?</label>
-                            <select name="alamat_usaha" class="form-control">
+                <div id="usaha_section" class="{{ $data->punya_usaha == 'tidak' ? 'd-none' : '' }}">
+                    {{-- SECTION II: KARAKTERISTIK USAHA --}}
+                    <div class="section-title mb-4 bg-light p-3 border-start border-warning border-5 rounded-end shadow-sm">
+                        <h5 class="mb-0 fw-bold text-dark">II. KARAKTERISTIK USAHA</h5>
+                    </div>
 
-                                <option value="rumah" {{ $data->alamat_usaha == 'rumah' ? 'selected' : '' }}>
-                                    rumah
-                                </option>
-
-                                <option value="ruko mal" {{ $data->alamat_usaha == 'ruko mal' ? 'selected' : '' }}>
-                                    ruko mal
-                                </option>
-
-                                <option value="bangunan toko" {{ $data->alamat_usaha == 'bangunan toko' ? 'selected' : '' }}>
-                                   bangunan toko
-                                </option>
-
-                                <option value="keliling di jalan" {{ $data->alamat_usaha == 'keliling di jalan' ? 'selected' : '' }}>
-                                   keliling di jalan
-                                </option>
-
-                                <option value="lewat internet/daring" {{ $data->alamat_usaha == ' lewat internet/daring' ? 'selected' : '' }}>
-                                    lewat internet/daring
-                                </option>
-
-                                <option value="pasar" {{ $data->alamat_usaha == 'pasar' ? 'selected' : '' }}>
-                                   pasar
-                                </option>
-
-                                <option value="pinggir jalan/kaki lima" {{ $data->alamat_usaha == 'pinggir jalan/kaki lima' ? 'selected' : '' }}>
-                                   pinggir jalan/kaki lima
-                                </option>
-                                <option value="lainnya" {{ $data->alamat_usaha == 'lainnya' ? 'selected' : '' }}>
-                                   lainnya
-                                </option>
-                            </select>
+                    <div class="row g-3 mb-5">
+                        <div class="col-12">
+                            <div class="form-group mb-3">
+                                <label class="fw-bold small text-muted text-uppercase mb-1">Kegiatan Utama Usaha</label>
+                                <input type="text" name="kegiatan_utama" class="form-control" value="{{ $data->kegiatan_utama }}">
+                            </div>
                         </div>
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label class="fw-bold small text-muted text-uppercase mb-1">Jenis Usaha</label>
+                                <select name="jenis_usaha" class="form-select">
+                                    <option value="1" {{ $data->jenis_usaha == '1' ? 'selected' : '' }}>Produksi Barang Sendiri</option>
+                                    <option value="2" {{ $data->jenis_usaha == '2' ? 'selected' : '' }}>Perdagangan / Reseller</option>
+                                    <option value="3" {{ $data->jenis_usaha == '3' ? 'selected' : '' }}>Kuliner (Makan/Minum)</option>
+                                    <option value="4" {{ $data->jenis_usaha == '4' ? 'selected' : '' }}>Penyediaan Jasa Lainnya</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label class="fw-bold small text-muted text-uppercase mb-1">Lokasi Usaha</label>
+                                <input type="text" name="alamat_usaha" class="form-control" value="{{ $data->alamat_usaha }}">
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group mb-3">
+                                <label class="fw-bold small text-muted text-uppercase mb-1">Estimasi Omset per Bulan (Rp)</label>
+                                <input type="number" name="omzet" class="form-control" value="{{ $data->omzet }}">
+                            </div>
+                        </div>
+                    </div>
 
-                            <div class="mb-3">
-                                <label>Link google maps usaha</label>
-                                <input
-                                    type="text"
-                                    name="link_maps_usaha"
-                                    class="form-control"
-                                    value="{{ $data->link_maps_usaha }}"></div>
+                    {{-- SECTION III: EKONOMI DIGITAL --}}
+                    <div class="section-title mb-4 bg-light p-3 border-start border-info border-5 rounded-end shadow-sm">
+                        <h5 class="mb-0 fw-bold text-dark">III. PENETRASI EKONOMI DIGITAL</h5>
+                    </div>
 
-                            <div class="mb-3">
-                                <label>Apa input yang digunakan?</label>
-                                <input
-                                    type="text"
-                                    name="input_usaha"
-                                    class="form-control"
-                                    value="{{ $data->input_usaha}}"></div>
-
-                             <div class="mb-3">
-                                <label>Bagaimana proses mengubah input menjadi produk output (beserta alatnya)?</label>
-                                <input
-                                    type="text"
-                                    name="proses_usaha"
-                                    class="form-control"
-                                    value="{{ $data->proses_usaha}}"></div>
-
-                                <div class="mb-3">
-                                <label>Produk Utama</label>
-                                <input
-                                    type="text"
-                                    name="produk_utama"
-                                    class="form-control"
-                                    value="{{ $data->produk_utama }}"></div>
-                                
-                                    <div class="mb-3">
-                                <label>NIB (Nomor Induk Berusaha)</label>
-                                <input
-                                    type="text"
-                                    name="nib"
-                                    class="form-control"
-                                    value="{{ $data->nib }}"></div>
-
-                                    <div class="mb-3">
-                                <label>Nomor sertifikat halal</label>
-                                <input
-                                    type="text"
-                                    name="sertif_halal"
-                                    class="form-control"
-                                    value="{{ $data->sertif_halal }}"></div>
-                                
-
-                                <div class="mb-3">
-                                    <label>Berapa estimasi omzet yang dihasilkan per bulan?</label>
-                                    <input type="text" name="omzet" class="form-control" value="{{ $data->omzet }}"></div>
-
-                                    <div class="mb-3">
-                                <label>Link sosial media</label>
-                                <input
-                                    type="text"
-                                    name="link_medsos_usaha"
-                                    class="form-control"
-                                    value="{{ $data->link_medsos_usaha }}"></div>
-                                  
-                                    <div class="mb-3">
-                                            <label>Ikut Komunitas</label>
-                                            <select name="ikut_komunitas" class="form-control">
-
-                                                <option value="ya" {{ $data->ikut_komunitas == 'ya' ? 'selected' : '' }}>
-                                                    Ya
-                                                </option>
-
-                                                <option value="tidak" {{ $data->ikut_komunitas == 'tidak' ? 'selected' : '' }}>
-                                                    Tidak
-                                                </option>
-
-                                            </select>
+                    <div class="row g-3 mb-5">
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label class="fw-bold small text-muted text-uppercase mb-1">Platform Digital (Pisahkan dengan koma)</label>
+                                <input type="text" name="platform_digital" class="form-control" value="{{ $data->platform_digital }}" placeholder="Contoh: Shopee, TikTok, Instagram">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label class="fw-bold small text-muted text-uppercase mb-1">Proporsi Transaksi Online</label>
+                                <select name="proporsi_pendapatan_digital" class="form-select">
+                                    <option value="0%" {{ $data->proporsi_pendapatan_digital == '0%' ? 'selected' : '' }}>0%</option>
+                                    <option value="1-25%" {{ $data->proporsi_pendapatan_digital == '1-25%' ? 'selected' : '' }}>1-25%</option>
+                                    <option value="26-50%" {{ $data->proporsi_pendapatan_digital == '26-50%' ? 'selected' : '' }}>26-50%</option>
+                                    <option value="51-75%" {{ $data->proporsi_pendapatan_digital == '51-75%' ? 'selected' : '' }}>51-75%</option>
+                                    <option value="76-100%" {{ $data->proporsi_pendapatan_digital == '76-100%' ? 'selected' : '' }}>76-100%</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label class="fw-bold small text-muted text-uppercase mb-1">Metode Pembayaran Digital</label>
+                                <input type="text" name="metode_pembayaran_digital" class="form-control" value="{{ $data->metode_pembayaran_digital }}" placeholder="Contoh: QRIS, Transfer, OVO">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label class="fw-bold small text-muted text-uppercase mb-1">Software Operasional</label>
+                                <input type="text" name="software_operasional" class="form-control" value="{{ $data->software_operasional }}" placeholder="Contoh: Moka POS, Zahir Accounting">
+                            </div>
+                        </div>
+                        <div class="col-12 mt-3">
+                            <div class="card border-info bg-light-info">
+                                <div class="card-body">
+                                    <label class="fw-bold mb-2">Produser Produk Digital?</label>
+                                    <div class="d-flex gap-4">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="is_producer" value="1" id="radYa" {{ $data->is_producer ? 'checked' : '' }}>
+                                            <label class="form-check-label fw-bold" for="radYa">Ya, Pembuat Produk/Konten Digital</label>
                                         </div>
-                                    <hr>
-
-                                        {{-- BLOK III --}}
-                                        <h5 class="mb-3">BLOK III. KOMUNITAS USAHA</h5>
-
-                                        <div class="mb-3">
-                                            <label>Nama Komunitas yang diikuti</label>
-                                            <input
-                                                type="text"
-                                                name="nama_komunitas"
-                                                class="form-control"
-                                                value="{{ $data->nama_komunitas }}"></div>
-
-                                            <div class="mb-3">
-                                                <label>Media Komunitas</label>
-                                                <input
-                                                    type="text"
-                                                    name="media_komunitas"
-                                                    class="form-control"
-                                                    value="{{ $data->media_komunitas }}"></div>
-
-                                                <div class="mb-3">
-                                                    <label>Media Komunitas Lainnya</label>
-                                                    <input
-                                                        type="text"
-                                                        name="media_komunitas_detail"
-                                                        class="form-control"
-                                                        value="{{ $data->media_komunitas_detail }}"></div>
-                                                <div class="mb-3">
-                                                    <label>Manfaat mengikuti komunitas usaha</label>
-                                                    <input
-                                                        type="text"
-                                                        name="manfaat_komunitas"
-                                                        class="form-control"
-                                                        value="{{ $data->manfaat_komunitas }}"></div>
-
-                                                    <hr>
-                                                    {{-- BLOK IV --}}
-                                                    <h5 class="mb-3">BLOK IV. INFORMASI TAMBAHAN</h5>
-                                                    <div class="mb-3">
-                                                    <label>Apakah memiliki teman/saudara yang memiliki usaha?</label>
-                                                    <select name="usaha_teman" class="form-control">
-
-                                                        <option value="ya" {{ $data->usaha_teman == 'ya' ? 'selected' : '' }}>
-                                                            Ya
-                                                        </option>
-
-                                                        <option value="tidak" {{ $data->usaha_teman == 'tidak' ? 'selected' : '' }}>
-                                                            Tidak
-                                                        </option>
-
-                                                    </select>
-                                                </div>
-
-                                                 <hr>
-                                                    {{-- BLOK V --}}
-                                                    <h5 class="mb-3">BLOK V. INFORMASI UMUM TAMBAHAN </h5>
-                                                    <div class="mb-3">
-                        <label>Nama teman/saudara</label>
-                        <input
-                            type="text"
-                            name="nama_teman"
-                            class="form-control"
-                            value="{{ $data->nama_teman}}"></div>
-                            <div class="mb-3">
-                        <label>No HP</label>
-                        <input
-                            type="text"
-                            name="no_hp_teman"
-                            class="form-control"
-                            value="{{ $data->no_hp_teman }}"></div>
-
-                                                    <div class="mb-3">
-                        <label>Apa kegiatan utama usaha/perusahaan</label>
-                        <input
-                            type="text"
-                            name="kegiatan_utama_teman"
-                            class="form-control"
-                            value="{{ $data->kegiatan_utama_teman }}"></div>
-
-
-                        <div class="mb-3">
-                            <label>Pilih salah satu sesuai usaha Anda</label>
-                            <select name="jenis_usaha_teman" class="form-control">
-
-                                <option value="1" {{ $data->jenis_usaha_teman == '1' ? 'selected' : '' }}>
-                                    1. produksi barang/menjual barang yang diproduksi sendiri
-                                </option>
-
-                                <option value="2" {{ $data->punya_usaha_teman == '2' ? 'selected' : '' }}>
-                                    2. penjualan barang uang dibeli dari usaha/perusahaan/pihak lain
-                                </option>
-
-                                <option value="3" {{ $data->punya_usaha_teman == '3' ? 'selected' : '' }}>
-                                   3. penyediaan jasa makanan minuman yang siap disantap ditempat atau dibawa pulang
-                                </option>
-
-                                <option value="4" {{ $data->punya_usaha_teman == '4' ? 'selected' : '' }}>
-                                   4. penyediaan jasa lainnya
-                                </option>
-                            </select>
-                        </div>
-
-                            <div class="mb-3">
-                            <label>Dimana usaha tersebut biasa dilakukan?</label>
-                            <select name="alamat_usaha_teman" class="form-control">
-
-                                <option value="rumah" {{ $data->alamat_usaha_teman == 'rumah' ? 'selected' : '' }}>
-                                    rumah
-                                </option>
-
-                                <option value="ruko mal" {{ $data->alamat_usaha_teman == 'ruko mal' ? 'selected' : '' }}>
-                                    ruko mal
-                                </option>
-
-                                <option value="bangunan toko" {{ $data->alamat_usaha_teman == 'bangunan toko' ? 'selected' : '' }}>
-                                   bangunan toko
-                                </option>
-
-                                <option value="keliling di jalan" {{ $data->alamat_usaha_teman == 'keliling di jalan' ? 'selected' : '' }}>
-                                   keliling di jalan
-                                </option>
-
-                                <option value="lewat internet/daring" {{ $data->alamat_usaha_teman == ' lewat internet/daring' ? 'selected' : '' }}>
-                                    lewat internet/daring
-                                </option>
-
-                                <option value="pasar" {{ $data->alamat_usaha_teman == 'pasar' ? 'selected' : '' }}>
-                                   pasar
-                                </option>
-
-                                <option value="pinggir jalan/kaki lima" {{ $data->alamat_usaha_teman == 'pinggir jalan/kaki lima' ? 'selected' : '' }}>
-                                   pinggir jalan/kaki lima
-                                </option>
-                                <option value="lainnya" {{ $data->alamat_usaha_teman == 'lainnya' ? 'selected' : '' }}>
-                                   lainnya
-                                </option>
-                            </select>
-                        </div>
-
-                            <div class="mb-3">
-                                <label>Link google maps usaha</label>
-                                <input
-                                    type="text"
-                                    name="link_maps_teman"
-                                    class="form-control"
-                                    value="{{ $data->link_maps_teman }}"></div>
-
-                            <div class="mb-3">
-                                <label>Apa input yang digunakan?</label>
-                                <input
-                                    type="text"
-                                    name="input_teman"
-                                    class="form-control"
-                                    value="{{ $data->input_teman}}"></div>
-
-                             <div class="mb-3">
-                                <label>Bagaimana proses mengubah input menjadi produk output (beserta alatnya)?</label>
-                                <input
-                                    type="text"
-                                    name="proses_teman"
-                                    class="form-control"
-                                    value="{{ $data->proses_teman}}"></div>
-
-                                <div class="mb-3">
-                                <label>Produk Utama</label>
-                                <input
-                                    type="text"
-                                    name="produk_utama_teman"
-                                    class="form-control"
-                                    value="{{ $data->produk_utama_teman }}"></div>
-                                
-                                    <div class="mb-3">
-                                <label>NIB (Nomor Induk Berusaha)</label>
-                                <input
-                                    type="text"
-                                    name="nib_teman"
-                                    class="form-control"
-                                    value="{{ $data->nib_teman}}"></div>
-
-                                    <div class="mb-3">
-                                <label>Nomor sertifikat halal</label>
-                                <input
-                                    type="text"
-                                    name="sertif_halal_teman"
-                                    class="form-control"
-                                    value="{{ $data->sertif_halal_teman}}"></div>
-                                
-
-                                <div class="mb-3">
-                                    <label>Berapa estimasi omzet yang dihasilkan per bulan?</label>
-                                    <input type="text" name="omzet_teman" class="form-control" value="{{ $data->omzet_teman }}"></div>
-
-                                    <div class="mb-3">
-                                <label>Link sosial media</label>
-                                <input
-                                    type="text"
-                                    name="socmed_teman"
-                                    class="form-control"
-                                    value="{{ $data->socmed_teman }}"></div>
-                                  
-                                   
-                                        <hr>
-
-
-                                                        <button  class="btn text-white"
-                                            style="background-color:#6984A9;">
-                                                            Update Data
-                                                        </button>
-
-                                                        <a href="{{ route('kues.jawaban') }}" class="btn text-white" style="background-color:#978a8a;">
-                                                            Back
-                                                        </a>
-
-                                                    </form>
-
-                                                </div>
-
-                                            </div>
-
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="is_producer" value="0" id="radTidak" {{ !$data->is_producer ? 'checked' : '' }}>
+                                            <label class="form-check-label fw-bold" for="radTidak">Bukan Produser</label>
                                         </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-                                        @endsection
+                    {{-- SECTION IV: KOMUNITAS --}}
+                    <div class="section-title mb-4 bg-light p-3 border-start border-secondary border-5 rounded-end shadow-sm">
+                        <h5 class="mb-0 fw-bold text-dark">IV. ASPEK SOSIAL</h5>
+                    </div>
+
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label class="fw-bold small text-muted text-uppercase mb-1">Ikut Komunitas?</label>
+                                <select name="ikut_komunitas" id="ikut_komunitas" class="form-select">
+                                    <option value="ya" {{ $data->ikut_komunitas == 'ya' ? 'selected' : '' }}>Ya</option>
+                                    <option value="tidak" {{ $data->ikut_komunitas == 'tidak' ? 'selected' : '' }}>Tidak</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6 {{ $data->ikut_komunitas == 'tidak' ? 'd-none' : '' }}" id="komunitas_wrapper">
+                            <div class="form-group mb-3">
+                                <label class="fw-bold small text-muted text-uppercase mb-1">Nama Komunitas</label>
+                                <input type="text" name="nama_komunitas" class="form-control" value="{{ $data->nama_komunitas }}">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-5 border-top pt-4 text-end">
+                    <button type="submit" class="btn btn-warning btn-lg text-white fw-bold px-5 py-3 shadow border-0">
+                        <i class="fas fa-save me-2"></i> UPDATE DATA RESPONDEN
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const usahaSelect = document.getElementById('punya_usaha');
+    const usahaSection = document.getElementById('usaha_section');
+    
+    usahaSelect.addEventListener('change', function() {
+        if(this.value === 'ya') {
+            usahaSection.classList.remove('d-none');
+        } else {
+            usahaSection.classList.add('d-none');
+        }
+    });
+
+    const komunitasSelect = document.getElementById('ikut_komunitas');
+    const komunitasWrapper = document.getElementById('komunitas_wrapper');
+    
+    komunitasSelect.addEventListener('change', function() {
+        if(this.value === 'ya') {
+            komunitasWrapper.classList.remove('d-none');
+        } else {
+            komunitasWrapper.classList.add('d-none');
+        }
+    });
+});
+</script>
+
+<style>
+    .rounded-4 { border-radius: 1rem !important; }
+    .bg-light-info { background-color: #f0faff; }
+</style>
+
+@endsection

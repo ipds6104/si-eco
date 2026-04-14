@@ -14,26 +14,23 @@ class KuesionerController extends Controller
         return view('kuesioner.index');
     }
 
-public function store(Request $request)
-{
+    public function store(Request $request)
+    {
+        $data = $request->all();
 
-    $data = $request->all();
+        // Checkbox fields (Arrays)
+        $arrayFields = ['media_komunitas', 'platform_digital', 'metode_pembayaran_digital', 'software_operasional'];
+        foreach ($arrayFields as $field) {
+            if ($request->has($field)) {
+                $data[$field] = collect($request->$field)->implode(', ');
+            }
+        }
 
-    // checkbox media komunitas
-    if ($request->has('media_komunitas')) {
-        $data['media_komunitas'] = collect($request->media_komunitas)->implode(', ');
+        Kuesioner::create($data);
+
+        return redirect()->route('kues.index')
+            ->with('success', 'Kuesioner berhasil disimpan');
     }
-
-    // simpan detail media
-    if ($request->filled('media_komunitas_detail')) {
-        $data['media_komunitas_detail'] = $request->media_komunitas_detail;
-    }
-
-    Kuesioner::create($data);
-
-    return redirect()->route('kues.index')
-        ->with('success','Kuesioner berhasil disimpan');
-}
 
     public function edit($id)
     {
@@ -45,27 +42,20 @@ public function store(Request $request)
     public function update(Request $request, $id)
     {
         $data = Kuesioner::findOrFail($id);
-
         $updateData = $request->all();
 
-    //     if ($request->has('media_komunitas')) {
-
-    //     if (is_array($request->media_komunitas)) {
-    //         $updateData['media_komunitas'] = implode(', ', $request->media_komunitas);
-    //     } else {
-    //         $updateData['media_komunitas'] = $request->media_komunitas;
-    //     }
-
-    // }
-
-    if ($request->has('media_komunitas')) {
-    $data['media_komunitas'] = collect($request->media_komunitas)->implode(', ');
-}
+        // Checkbox fields (Arrays)
+        $arrayFields = ['media_komunitas', 'platform_digital', 'metode_pembayaran_digital', 'software_operasional'];
+        foreach ($arrayFields as $field) {
+            if ($request->has($field)) {
+                $updateData[$field] = collect($request->$field)->implode(', ');
+            }
+        }
 
         $data->update($updateData);
 
         return redirect()->route('kues.jawaban')
-            ->with('success','Data berhasil diupdate');
+            ->with('success', 'Data berhasil diupdate');
     }
 
     // public function jawaban()
@@ -147,15 +137,26 @@ public function store(Request $request)
     public function dashboard()
     {
         $total = Kuesioner::count();
+        $punyaUsaha = Kuesioner::where('punya_usaha', 'ya')->count();
+        $tidakUsaha = Kuesioner::where('punya_usaha', 'tidak')->count();
+        $ikutKomunitas = Kuesioner::where('ikut_komunitas', 'ya')->count();
+        $isProducer = Kuesioner::where('is_producer', 1)->count();
 
-        $usahaDigital = Kuesioner::where('usaha_digital',1)->count();
-
-        $tidakUsaha = Kuesioner::where('usaha_digital',0)->count();
+        $jenis1 = Kuesioner::where('jenis_usaha', '1')->count();
+        $jenis2 = Kuesioner::where('jenis_usaha', '2')->count();
+        $jenis3 = Kuesioner::where('jenis_usaha', '3')->count();
+        $jenis4 = Kuesioner::where('jenis_usaha', '4')->count();
 
         return view('dashboard', compact(
             'total',
-            'usahaDigital',
-            'tidakUsaha'
+            'punyaUsaha',
+            'tidakUsaha',
+            'ikutKomunitas',
+            'isProducer',
+            'jenis1',
+            'jenis2',
+            'jenis3',
+            'jenis4'
         ));
     }
     

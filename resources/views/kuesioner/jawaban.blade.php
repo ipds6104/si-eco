@@ -51,7 +51,7 @@
             <tr>
                 <th>No</th>
                 <th>Nama</th>
-                <th>NPM</th>
+                <th>NIK</th>
                 <th>Kepemilikan Usaha</th>
                 <th>Kegiatan Utama</th>
                 <th>Aksi</th>
