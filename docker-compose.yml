@@ -1,0 +1,37 @@
+services:
+  app:
+    build:
+      context: .
+      target: base
+    image: si-aksi-app
+    ports:
+      - "${PORT_APP:-8100}:80"
+      - "${PORT_VITE:-8173}:5173" # Vite
+    volumes:
+      - .:/app
+    environment:
+      - APP_ENV=local
+      - APP_DEBUG=true
+      - SERVER_NAME=:80
+      - DB_CONNECTION=mysql
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+      - DB_DATABASE=${DB_DATABASE}
+      - DB_USERNAME=${DB_USERNAME}
+      - DB_PASSWORD=${DB_PASSWORD}
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  mailpit:
+    image: 'axllent/mailpit:latest'
+    ports:
+      - "${PORT_MAILPIT_SMTP:-8125}:1025"
+      - "${PORT_MAILPIT_UI:-8180}:8025"
+
+# No persistent volumes needed for DB since it is external

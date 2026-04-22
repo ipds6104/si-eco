@@ -15,10 +15,10 @@ class PegawaiSeeder extends Seeder
      */
     public function run(): void
     {
-        $filePath = database_path('seeders/data/Pegawai.json');
+        $filePath = database_path('seeders/data/pegawai.json');
 
         if (!File::exists($filePath)) {
-            $this->command->error("File Pegawai.json tidak ditemukan.");
+            $this->command->error("File pegawai.json tidak ditemukan.");
             return;
         }
 

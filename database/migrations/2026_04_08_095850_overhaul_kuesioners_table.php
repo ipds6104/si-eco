@@ -12,9 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         // 1. Rename NIK first
-        Schema::table('kuesioners', function (Blueprint $table) {
-            $table->renameColumn('npm', 'nik');
-        });
+        // Note: Using raw SQL because MariaDB 10.4 does not support 'RENAME COLUMN'
+        DB::statement("ALTER TABLE kuesioners CHANGE npm nik VARCHAR(255) NOT NULL");
 
         // 2. Drop old columns
         Schema::table('kuesioners', function (Blueprint $table) {
@@ -52,8 +51,10 @@ return new class extends Migration
      */
     public function down(): void
     {
+        // Note: Using raw SQL for compatibility
+        DB::statement("ALTER TABLE kuesioners CHANGE nik npm VARCHAR(255) NOT NULL");
+
         Schema::table('kuesioners', function (Blueprint $table) {
-            $table->renameColumn('nik', 'npm');
 
             $table->boolean('usaha_teman')->nullable();
             $table->string('nama_teman')->nullable();
