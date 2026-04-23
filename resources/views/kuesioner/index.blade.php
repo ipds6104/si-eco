@@ -19,6 +19,15 @@
                 </div>
 
                 <div class="card-body p-4 p-md-5">
+                    @if(session('success'))
+                        <div class="alert alert-success border-0 shadow-sm rounded-4 p-4 mb-4 text-center">
+                            <div class="display-5 mb-3"><i class="fas fa-check-circle"></i></div>
+                            <h4 class="fw-bold">Terima Kasih!</h4>
+                            <p class="mb-0">{{ session('success') }}</p>
+                        </div>
+                    @endif
+
+
                     <!-- STEP INDICATOR -->
                     <div class="step-indicator mb-4">
                         <div class="step-line"></div>
@@ -298,7 +307,7 @@
 @endsection
 
 @section('script')
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="{{ asset('assets/js/plugin/sweetalert2.all.min.js') }}"></script>
 <script>
 document.addEventListener("DOMContentLoaded", function () {
     let currentStep = 0;

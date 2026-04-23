@@ -213,6 +213,9 @@
                 <i class="bi bi-info-circle me-2"></i>
                 Mari Sukseskan Sensus Ekonomi 2026
             </p>
+            @guest
+                <a href="{{ route('login') }}" class="text-muted small text-decoration-none mt-2 d-inline-block"><i class="fas fa-lock me-1"></i> Login Admin</a>
+            @endguest
         </div>
 
     </div>

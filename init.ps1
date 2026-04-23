@@ -13,13 +13,21 @@ if (-not (Test-Path ".env")) {
     Copy-Item ".env.example" ".env"
 }
 
+# 1a. Check for Local DB Profile
+$profileFlag = ""
+$envContent = Get-Content ".env" -Raw
+if ($envContent -match "USE_LOCAL_DB=true") {
+    Write-Host "Local MySQL enabled via USE_LOCAL_DB=true" -ForegroundColor Cyan
+    $profileFlag = "--profile with-db"
+}
+
 # 2. Start/Check Docker Containers
 if ($Fresh) {
     Write-Host "Force-rebuilding Docker containers..." -ForegroundColor Yellow
-    docker compose up -d --build --remove-orphans
+    docker compose $profileFlag up -d --build --remove-orphans
 } else {
     Write-Host "Ensuring Docker containers are running..." -ForegroundColor Yellow
-    docker compose up -d
+    docker compose $profileFlag up -d
 }
 
 if ($LASTEXITCODE -ne 0) {

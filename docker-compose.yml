@@ -9,6 +9,7 @@ services:
       - "${PORT_VITE:-8173}:5173" # Vite
     volumes:
       - .:/app
+    command: php artisan octane:start --server=frankenphp --host=0.0.0.0 --port=80 --admin-port=2019 --watch --poll
     environment:
       - APP_ENV=local
       - APP_DEBUG=true
@@ -34,4 +35,22 @@ services:
       - "${PORT_MAILPIT_SMTP:-8125}:1025"
       - "${PORT_MAILPIT_UI:-8180}:8025"
 
-# No persistent volumes needed for DB since it is external
+  db:
+    image: mysql:8.0
+    profiles:
+      - with-db
+    ports:
+      - "${PORT_DB:-3306}:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD:-root}
+      MYSQL_DATABASE: ${DB_DATABASE:-laravel}
+    volumes:
+      - db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${DB_PASSWORD:-root}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  db_data:

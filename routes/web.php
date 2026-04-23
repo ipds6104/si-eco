@@ -13,9 +13,18 @@ use App\Http\Controllers\KuesionerController;
 // -------------------------------------------------------------------
 // Halaman Home
 // -------------------------------------------------------------------
-Route::get('/', function () {
+Route::get('/', [WelcomePageController::class, 'index'])->name('welcome');
+Route::get('/login', function () {
     return view('auth.login');
 })->name('login');
+
+// Akses Publik Kuesioner (Fixed)
+Route::get('/isi-kuesioner', [KuesionerController::class, 'index'])->name('kues.index');
+Route::post('/kuesioner/submit', [KuesionerController::class, 'store'])->name('kues.store');
+
+// Akses Publik Form Dinamis (Multi-Kuesioner)
+Route::get('/f/{id}', [FormController::class, 'show'])->name('form.public.show');
+Route::post('/f/{id}/answer', [FormController::class, 'storeAnswer'])->name('form.public.store');
 
 // -------------------------------------------------------------------
 // Auth & Verifikasi
@@ -47,9 +56,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
         // Dashboard
         Route::get('/dashboard', [DashboardController::class, 'index'])
             ->name('dashboard');
-
-        Route::get('/welcomePage', [WelcomePageController::class, 'index'])
-            ->name('welcome.page');
 
         // Profile
         Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -94,8 +100,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::delete('/{id}', [ManageUserController::class, 'destroy'])->name('destroy');
         });
 
-        Route::get('/kuesioner', [KuesionerController::class,'index'])->name('kues.index');
-        Route::post('/kuesioner', [KuesionerController::class,'store'])->name('kues.store');
 
         Route::get('/jawaban', [KuesionerController::class,'jawaban'])->name('kues.jawaban');
         Route::get('/jawaban/{id}', [KuesionerController::class,'show'])->name('kues.show');

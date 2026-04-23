@@ -9,7 +9,7 @@
             </div>
         </div>
 
-        <form action="{{ route('form.storeAnswer', $form->id) }}"
+        <form action="{{ route('form.public.store', $form->id) }}"
             method="POST"
             onsubmit="return validateAnswers(event)">
             @csrf
@@ -99,7 +99,7 @@
 @endsection
 
 @section('script')
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="{{ asset('assets/js/plugin/sweetalert2.all.min.js') }}"></script>
 <script>
     // Real-time validation untuk checkbox dengan min/max
     function checkSelectionLimits(checkbox) {

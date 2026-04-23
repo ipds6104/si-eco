@@ -8,8 +8,41 @@
             <h3 class="fw-bold text-dark mb-1">Dashboard Statistik Ekonomi Digital</h3>
             <p class="text-muted small mb-0">Visualisasi data responden dan penetrasi industri digital.</p>
         </div>
-        <div class="bg-white p-2 rounded shadow-sm border">
+        <div class="bg-white p-2 rounded shadow-sm border text-end">
             <span class="text-muted small"><i class="fas fa-calendar-alt me-1"></i> Data Terkini: {{ date('d M Y') }}</span>
+        </div>
+    </div>
+
+    <!-- SHARE LINK SECTION -->
+    <div class="card border-0 shadow-sm rounded-4 mb-5 overflow-hidden">
+        <div class="card-body p-0">
+            <div class="row g-0">
+                <div class="col-md-4 bg-warning d-flex align-items-center justify-content-center p-4 text-white">
+                    <div class="text-center">
+                        <div class="display-4 mb-2"><i class="fab fa-whatsapp"></i></div>
+                        <h5 class="fw-bold mb-0">Bagikan Kuesioner</h5>
+                    </div>
+                </div>
+                <div class="col-md-8 p-4">
+                    <p class="text-muted mb-3">Gunakan link di bawah ini untuk menyebarkan kuesioner ke responden melalui WhatsApp atau media sosial lainnya.</p>
+                    <div class="input-group mb-3 shadow-sm">
+                        <input type="text" id="publicLink" class="form-control bg-light border-0 py-3" value="{{ route('kues.index') }}" readonly>
+                        <button class="btn btn-dark px-4" type="button" onclick="copyLink()">
+                            <i class="fas fa-copy me-2"></i> Salin Link
+                        </button>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <a href="https://wa.me/?text={{ urlencode('Halo! Mohon kesediaannya untuk mengisi kuesioner Identifikasi Ekonomi Digital (CAIKUE) melalui link berikut: ' . route('kues.index')) }}" 
+                           target="_blank" 
+                           class="btn btn-success rounded-pill px-4">
+                            <i class="fab fa-whatsapp me-2"></i> Kirim ke WhatsApp
+                        </a>
+                        <span id="copyMsg" class="text-success small align-self-center d-none animated fadeIn">
+                            <i class="fas fa-check me-1"></i> Link tersalin!
+                        </span>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -126,7 +159,7 @@
 
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="{{ asset('assets/js/plugin/chart.min.js') }}"></script>
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
@@ -175,6 +208,19 @@
             }
         });
     });
+
+    function copyLink() {
+        const copyText = document.getElementById("publicLink");
+        copyText.select();
+        copyText.setSelectionRange(0, 99999);
+        navigator.clipboard.writeText(copyText.value);
+        
+        const msg = document.getElementById("copyMsg");
+        msg.classList.remove("d-none");
+        setTimeout(() => {
+            msg.classList.add("d-none");
+        }, 2000);
+    }
 </script>
 
 <style>

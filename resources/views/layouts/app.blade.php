@@ -61,12 +61,22 @@
         .inner-page {
             margin-top: 70px;
         }
+
+        @guest
+        .main-panel {
+            width: 100% !important;
+            float: none !important;
+        }
+        .wrapper {
+            display: block !important;
+        }
+        @endguest
     </style>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+    <link rel="stylesheet" href="{{ asset('assets/vendor/daterangepicker.css') }}" />
     <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('/assets/img/apple-touch-icon.png') }}">
     <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('/assets/img/favicon-32x32.png') }}">
     <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('/assets/img/favicon-16x16.png') }}">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="{{ asset('assets/vendor/bootstrap-icons/bootstrap-icons.min.css') }}">
     <link rel="manifest" href="{{ asset('/assets/img/site.webmanifest') }}">
 
     <!-- Fonts and icons -->
@@ -112,10 +122,14 @@
 <body class="antialiased">
 
     <div class="wrapper">
-        @include('_sidebar')
+        @auth
+            @include('_sidebar')
+        @endauth
 
         <div class="main-panel">
-            @include('_navbar')
+            @auth
+                @include('_navbar')
+            @endauth
 
             @if(request()->routeIs('monitoring.operator.*'))
             @endif

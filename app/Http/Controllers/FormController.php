@@ -126,13 +126,15 @@ class FormController extends Controller
         $form = Form::findOrFail($id);
         $userId = auth()->id();
 
-        // PENTING: Cek apakah user sudah pernah mengisi form ini
-        $existingAnswer = FormAnswer::where('form_id', $form->id)
-            ->where('user_id', $userId)
-            ->first();
+        // PENTING: Cek apakah user sudah pernah mengisi form ini (Hanya untuk user yang login)
+        if ($userId) {
+            $existingAnswer = FormAnswer::where('form_id', $form->id)
+                ->where('user_id', $userId)
+                ->first();
 
-        if ($existingAnswer) {
-            return back()->with('error', 'Anda sudah pernah mengisi form ini sebelumnya!')->withInput();
+            if ($existingAnswer) {
+                return back()->with('error', 'Anda sudah pernah mengisi form ini sebelumnya!')->withInput();
+            }
         }
 
         // Validasi checkbox min/max selections
@@ -184,7 +186,12 @@ class FormController extends Controller
             }
 
             DB::commit();
-            return redirect()->route('form.list')->with('success', 'Jawaban berhasil disimpan!');
+            
+            if ($userId) {
+                return redirect()->route('form.list')->with('success', 'Jawaban berhasil disimpan!');
+            } else {
+                return redirect()->route('form.public.show', $id)->with('success', 'Terima kasih! Jawaban Anda berhasil dikirim.');
+            }
         } catch (\Exception $e) {
             DB::rollback();
             return back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage())->withInput();

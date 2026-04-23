@@ -12,8 +12,17 @@
         <div class="list-group">
             @forelse($forms as $form)
             <div class="list-group-item d-flex justify-content-between align-items-center mb-2">
-                <!-- Judul form tanpa link -->
-                <span>{{ $form->title }}</span>
+                <!-- Judul form & Link Publik -->
+                <div class="d-flex flex-column">
+                    <span class="fw-bold">{{ $form->title }}</span>
+                    <div class="mt-1 d-flex align-items-center gap-2">
+                        <small class="text-primary"><i class="fas fa-link"></i> {{ route('form.public.show', $form->id) }}</small>
+                        <a href="https://wa.me/?text={{ urlencode('Mohon kesediaan Bapak/Ibu untuk mengisi kuesioner ' . $form->title . ' melalui link berikut: ' . route('form.public.show', $form->id)) }}" 
+                           target="_blank" class="badge bg-success text-white text-decoration-none p-1">
+                           <i class="fab fa-whatsapp"></i> Share
+                        </a>
+                    </div>
+                </div>
 
                 <div class="btn-group ms-auto">
                     @php
