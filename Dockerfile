@@ -87,13 +87,13 @@ RUN chmod -R 775 storage bootstrap/cache
 # Switch to non-root user
 USER www-data
 
-# Port 8000 for Octane/FrankenPHP
-EXPOSE 8000
+# Port 80 — matches Coolify/Traefik default routing
+EXPOSE 80
 
 # Entrypoint
 COPY --chown=www-data:www-data docker/entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
 
 ENTRYPOINT ["entrypoint.sh"]
-# Use port 8000 for Octane as per best practice and screenshot advice
-CMD ["php", "/app/artisan", "octane:start", "--server=frankenphp", "--host=0.0.0.0", "--port=8000", "--admin-port=2019"]
+# Port 80 agar sesuai dengan Traefik default routing di Coolify
+CMD ["php", "/app/artisan", "octane:start", "--server=frankenphp", "--host=0.0.0.0", "--port=80"]
