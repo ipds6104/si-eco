@@ -23,12 +23,12 @@ if [ "$APP_ENV" = "production" ]; then
 
     # Run migrations
     echo "Running migrations..."
-    php artisan migrate --force --no-interaction
+    php /app/artisan migrate --force --no-interaction
 
     # Cache configurations
     echo "Caching config, routes, and views..."
-    php artisan optimize
-    php artisan view:cache
+    php /app/artisan optimize
+    php /app/artisan view:cache
 fi
 
 # Execute CMD
