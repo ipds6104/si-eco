@@ -151,8 +151,8 @@
     <div class="page-inner">
         <!-- Hero Section -->
         <div class="hero-section text-center">
-            <h2 class="fw-bold">Selamat Datang di SI-KUE</h2>
-            <p class="mb-0">Sistem Kuesioner Usaha Ekonomi</p>
+            <h2 class="fw-bold">Selamat Datang di CAIKUE</h2>
+            <p class="mb-0"><strong>C</strong>atatan <strong>I</strong>ndustri dan <strong>Kue</strong>sioner <strong>E</strong>konomi Digital</p>
         </div>
 
         <!-- Deskripsi -->
@@ -160,7 +160,7 @@
             <div class="col-12">
                 <div class="description-box">
                     <p class="lead mb-0">
-                        <strong>SI-KUE</strong> atau Sistem Kuesioner Usaha Ekonomi merupakan sebuah alat untuk mengumpulkan data dengan tujuan untuk mengetahui <span class="fw-bold" style="color: #fe990b;">pelaku usaha ekonomi</span> <em>online</em> maupun <em>offline</em>.
+                        <strong>CAIKUE</strong> merupakan akronim dari <strong>C</strong>atatan <strong>I</strong>ndustri dan <strong>Kue</strong>sioner <strong>E</strong>konomi Digital yang merupakan alat untuk mengumpulkan data profil industri digital secara umum, guna memetakan <span class="fw-bold" style="color: #fe990b;">pelaku usaha ekonomi</span> digital secara komprehensif.
                     </p>
                 </div>
             </div>

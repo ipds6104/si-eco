@@ -8,7 +8,7 @@
                     class="fw-bold fst-italic text-uppercase text-white">
                     <a href="/" class="logo d-flex align-items-center">
                         <span class="brand-text">
-                            SI-KUE
+                            CAIKUE
                         </span>
                     </a>
                 </span>

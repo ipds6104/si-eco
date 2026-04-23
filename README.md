@@ -1,6 +1,6 @@
-# Aplikasi Kuesioner dan Form (SI-AKSI)
+# CAIKUE (Catatan Industri dan Kuesioner Ekonomi Digital)
 
-Aplikasi berbasis web untuk manajemen sistem kuesioner dan formulir secara dinamis. Dibangun menggunakan framework **Laravel 10**, **Tailwind CSS**, dan **Alpine.js**, aplikasi ini memungkinkan pembuatan kuesioner, pengelolaan jawaban pengguna, serta ekspor laporan jawaban kuesioner.
+Aplikasi berbasis web untuk manajemen sistem kuesioner dan formulir industri digital secara umum. Dibangun menggunakan framework **Laravel 10**, **Tailwind CSS**, dan **Alpine.js**, aplikasi ini memungkinkan pembuatan kuesioner, pengelolaan jawaban pengguna, serta ekspor laporan jawaban kuesioner.
 
 ## 🚀 Fitur Utama
 

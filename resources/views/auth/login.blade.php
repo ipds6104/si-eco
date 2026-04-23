@@ -97,7 +97,7 @@ body{
 
 <div class="glass-card">
 
-<h2>SI-KUE</h2>
+<h2>CAIKUE</h2>
 <p>Silakan login untuk mengakses sistem</p>
 
 <form method="POST" action="{{ route('login') }}">
