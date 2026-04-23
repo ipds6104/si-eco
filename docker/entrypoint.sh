@@ -1,35 +1,26 @@
 #!/bin/sh
-set -e
 
-# Permissions check (ensure www-data can write to storage)
-# This is mainly for local development where volumes might mess up permissions
-if [ ! -w "storage" ]; then
-    echo "Fixing storage permissions..."
-    # Note: This might fail if running as non-root on a volume owned by root
-    # But in production/Coolify, the Dockerfile handles this.
-fi
+# JANGAN gunakan set -e di sini!
+# Jika migrasi/cache gagal (misal: DB belum siap), kita tetap HARUS
+# menjalankan Octane agar FrankenPHP tidak jatuh ke mode phpinfo().
+
+cd /app
 
 # Initial setup for production
 if [ "$APP_ENV" = "production" ]; then
     echo "🚀 Running in production mode..."
-    
-    # Check if Octane is installed
-    if [ ! -f "config/octane.php" ]; then
-        echo "Installing Laravel Octane..."
-        # We need composer here if it's not already installed, but it should be in the final image
-        # for this specific check to pass during the first run if needed.
-        # Ideally, Octane is installed in the image build phase.
-    fi
 
-    # Run migrations
+    # Run migrations (toleransi jika DB belum siap)
     echo "Running migrations..."
-    php /app/artisan migrate --force --no-interaction
+    php /app/artisan migrate --force --no-interaction 2>&1 || echo "⚠️  Migration failed (DB mungkin belum siap), skipping..."
 
-    # Cache configurations
+    # Cache configurations (toleransi jika gagal)
     echo "Caching config, routes, and views..."
-    php /app/artisan optimize
-    php /app/artisan view:cache
+    php /app/artisan optimize 2>&1 || echo "⚠️  Optimize failed, skipping..."
+    php /app/artisan view:cache 2>&1 || echo "⚠️  View cache failed, skipping..."
+
+    echo "✅ Entrypoint setup complete. Starting application..."
 fi
 
-# Execute CMD
+# Execute CMD (Octane start) — INI HARUS SELALU TERCAPAI
 exec "$@"

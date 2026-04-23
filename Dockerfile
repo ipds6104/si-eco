@@ -66,6 +66,10 @@ ENV APP_ENV=production
 ENV APP_DEBUG=false
 # Octane configuration
 ENV OCTANE_SERVER=frankenphp
+# Safety net: jika Octane gagal start, FrankenPHP Caddy default akan
+# tetap mengarah ke /app/public/ (bukan root kosong yang menampilkan phpinfo)
+ENV SERVER_ROOT=/app/public
+ENV FRANKENPHP_CONFIG="worker /app/public/index.php"
 
 # Copy code and dependencies
 COPY --from=composer /app/vendor ./vendor
