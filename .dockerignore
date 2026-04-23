@@ -22,3 +22,4 @@ phpunit.xml
 .styleci.yml
 .gitignore
 README.md
+bootstrap/cache/*.php
