@@ -64,8 +64,8 @@ RUN chown -R www-data:www-data /app
 # App environment
 ENV APP_ENV=production
 ENV APP_DEBUG=false
-# Octane configuration for FrankenPHP
-ENV FRANKENPHP_CONFIG="worker ./public/index.php"
+# Octane configuration
+ENV OCTANE_SERVER=frankenphp
 
 # Copy code and dependencies
 COPY --from=composer /app/vendor ./vendor
@@ -83,9 +83,13 @@ RUN chmod -R 775 storage bootstrap/cache
 # Switch to non-root user
 USER www-data
 
+# Port 80 for the application
+EXPOSE 80
+
 # Entrypoint
 COPY --chown=www-data:www-data docker/entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
 
 ENTRYPOINT ["entrypoint.sh"]
-CMD ["frankenphp", "run", "--config", "/etc/caddy/Caddyfile"]
+# Default command runs Octane in production mode (no watch/poll)
+CMD ["php", "/app/artisan", "octane:start", "--server=frankenphp", "--host=0.0.0.0", "--port=80", "--admin-port=2019"]
