@@ -83,13 +83,13 @@ RUN chmod -R 775 storage bootstrap/cache
 # Switch to non-root user
 USER www-data
 
-# Port 80 for the application
-EXPOSE 80
+# Port 8000 for Octane/FrankenPHP
+EXPOSE 8000
 
 # Entrypoint
 COPY --chown=www-data:www-data docker/entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
 
 ENTRYPOINT ["entrypoint.sh"]
-# Default command runs Octane in production mode (no watch/poll)
-CMD ["php", "/app/artisan", "octane:start", "--server=frankenphp", "--host=0.0.0.0", "--port=80", "--admin-port=2019"]
+# Use port 8000 for Octane as per best practice and screenshot advice
+CMD ["php", "/app/artisan", "octane:start", "--server=frankenphp", "--host=0.0.0.0", "--port=8000", "--admin-port=2019"]
