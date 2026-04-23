@@ -14,7 +14,7 @@ Aplikasi manajemen kuesioner dan pendataan industri digital yang dioptimalkan un
 ## 🛠️ Teknologi (High-Performance Stack)
 
 - **Runtime:** [FrankenPHP](https://frankenphp.dev/) (Modern PHP App Server)
-- **Engine:** Laravel 10 + [Laravel Octane](https://laravel.com/docs/10.x/octane)
+- **Engine:** [Laravel 13](https://laravel.com/docs/13.x) + [Laravel Octane](https://laravel.com/docs/13.x/octane)
 - **Frontend:** Tailwind CSS, Alpine.js, Vite
 - **Infrastructure:** Docker & Docker Compose (Zero-Config Setup)
 
