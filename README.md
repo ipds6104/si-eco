@@ -16,7 +16,7 @@ Aplikasi manajemen kuesioner dan pendataan industri digital yang dioptimalkan un
 - **Runtime:** [FrankenPHP](https://frankenphp.dev/) (Modern PHP App Server)
 - **Engine:** [Laravel 13](https://laravel.com/docs/13.x) + [Laravel Octane](https://laravel.com/docs/13.x/octane)
 - **Frontend:** Tailwind CSS, Alpine.js, Vite
-- **Infrastructure:** Docker & Docker Compose
+- **Infrastructure:** Docker & Docker Compose (Zero-Config Setup)
 
 ## ⚙️ Panduan Instalasi Cepat (Docker)
 
