@@ -5,12 +5,8 @@ services:
       target: final
     image: si-aksi-app
     restart: always
-    ports:
-      - "${PORT_APP:-8100}:8000"
-    # Volumes dihapus untuk produksi agar tidak menimpa kode di dalam image
-    # volumes:
-    #   - .:/app
-    # Command dikelola oleh CMD di Dockerfile (php artisan octane:start --port=8000)
+    expose:
+      - "8000"
     environment:
       - APP_ENV=${APP_ENV:-production}
       - APP_DEBUG=${APP_DEBUG:-false}
@@ -32,10 +28,10 @@ services:
       test: ["CMD", "curl", "-f", "http://localhost:8000/"]
       interval: 30s
       timeout: 10s
-      retries: 3
-      start_period: 60s
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
+      retries: 5
+      start_period: 90s
+    # Traefik labels dikelola otomatis oleh Coolify — JANGAN tambah manual
+    # Port routing dikonfigurasi di Dashboard Coolify (Domain field)
 
   mailpit:
     image: 'axllent/mailpit:latest'
