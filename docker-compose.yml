@@ -7,9 +7,9 @@ services:
     restart: always
     ports:
       - "${PORT_APP:-8100}:80"
-    # Di produksi, kita tidak butuh volume mount karena kode sudah di-bake di image 'final'
-    volumes:
-      - .:/app
+    # Volumes dihapus untuk produksi agar tidak menimpa kode di dalam image (100% Sembuh)
+    # volumes:
+    #   - .:/app
     command: ${DOCKER_APP_COMMAND:-bash -c "php /app/artisan octane:start --server=frankenphp --host=0.0.0.0 --port=80 --admin-port=2019 --watch --poll"}
     environment:
       - APP_ENV=local
