@@ -84,16 +84,16 @@ RUN composer dump-autoload --optimize --no-dev --classmap-authoritative
 RUN chown -R www-data:www-data storage bootstrap/cache
 RUN chmod -R 775 storage bootstrap/cache
 
-# Switch to non-root user
-USER www-data
+# FrankenPHP handles privilege dropping internally (workers run as www-data)
+# Jangan gunakan USER www-data karena akan mencegah binding ke port 80
 
 # Port 80 — matches Coolify/Traefik default routing
 EXPOSE 80
 
 # Entrypoint
-COPY --chown=www-data:www-data docker/entrypoint.sh /usr/local/bin/entrypoint.sh
+COPY docker/entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
 
 ENTRYPOINT ["entrypoint.sh"]
 # Port 80 agar sesuai dengan Traefik default routing di Coolify
-CMD ["php", "/app/artisan", "octane:start", "--server=frankenphp", "--host=0.0.0.0", "--port=80"]
+CMD ["php", "/app/artisan", "octane:start", "--server=frankenphp", "--host=0.0.0.0", "--port=80", "--admin-port=2019"]
