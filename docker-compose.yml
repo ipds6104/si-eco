@@ -37,7 +37,7 @@ services:
       - ./resources:/app/resources
       - ./routes:/app/routes
       - ./database:/app/database
-      - ./storage:/app/storage
+      - storage_data:/app/storage
       - ./public:/app/public
       - .env:/app/.env
     # Traefik labels dikelola otomatis oleh Coolify — JANGAN tambah manual
@@ -71,3 +71,4 @@ services:
 volumes:
   si_eco_vendor:
   db_data:
+  storage_data:
