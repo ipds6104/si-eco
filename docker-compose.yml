@@ -7,6 +7,8 @@ services:
     restart: always
     expose:
       - "80"
+    ports:
+      - "8100:80"
     environment:
       - APP_ENV=${APP_ENV:-production}
       - APP_DEBUG=${APP_DEBUG:-false}
@@ -30,6 +32,12 @@ services:
       timeout: 10s
       retries: 5
       start_period: 90s
+    volumes:
+      - ./app:/app/app
+      - ./resources:/app/resources
+      - ./routes:/app/routes
+      - ./database:/app/database
+      - .env:/app/.env
     # Traefik labels dikelola otomatis oleh Coolify — JANGAN tambah manual
     # Port routing dikonfigurasi di Dashboard Coolify (Domain field)
 
@@ -59,4 +67,5 @@ services:
       retries: 5
 
 volumes:
+  si_eco_vendor:
   db_data:

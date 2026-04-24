@@ -20,6 +20,7 @@ Route::get('/login', function () {
 
 // Akses Publik Kuesioner (Fixed)
 Route::get('/isi-kuesioner', [KuesionerController::class, 'index'])->name('kues.index');
+Route::get('/kuesioner/regions/{parentId}', [KuesionerController::class, 'getRegions'])->name('kues.regions');
 Route::post('/kuesioner/submit', [KuesionerController::class, 'store'])->name('kues.store');
 
 // Akses Publik Form Dinamis (Multi-Kuesioner)

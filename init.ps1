@@ -22,12 +22,18 @@ if ($envContent -match "USE_LOCAL_DB=true") {
 }
 
 # 2. Start/Check Docker Containers
+$dockerArgs = @("up", "-d")
 if ($Fresh) {
     Write-Host "Force-rebuilding Docker containers..." -ForegroundColor Yellow
-    docker compose $profileFlag up -d --build --remove-orphans
+    $dockerArgs += @("--build", "--remove-orphans")
 } else {
     Write-Host "Ensuring Docker containers are running..." -ForegroundColor Yellow
-    docker compose $profileFlag up -d
+}
+
+if ($profileFlag -ne "") {
+    docker compose --profile with-db @dockerArgs
+} else {
+    docker compose @dockerArgs
 }
 
 if ($LASTEXITCODE -ne 0) {

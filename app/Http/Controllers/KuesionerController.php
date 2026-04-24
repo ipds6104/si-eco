@@ -11,26 +11,55 @@ class KuesionerController extends Controller
 {
     public function index()
     {
-        return view('kuesioner.index');
+        $kabupatens = \App\Models\Region::where('type', 'KABUPATEN')->get();
+        return view('kuesioner.index', compact('kabupatens'));
+    }
+
+    public function getRegions($parentId)
+    {
+        $regions = \App\Models\Region::where('parent_id', $parentId)->get();
+        return response()->json($regions);
     }
 
     public function store(Request $request)
     {
         $data = $request->all();
 
+        // Handle File Upload
+        if ($request->hasFile('foto_rumah')) {
+            $file = $request->file('foto_rumah');
+            $fileName = time() . '_' . $file->getClientOriginalName();
+            $path = $file->storeAs('uploads/foto_rumah', $fileName, 'public');
+            $data['foto_rumah'] = $path;
+        }
+
         // Checkbox fields (Arrays)
-        $arrayFields = ['media_komunitas', 'platform_digital', 'metode_pembayaran_digital', 'software_operasional'];
+        $arrayFields = [
+            'media_komunitas', 
+            'platform_digital', 
+            'platform_digital_v2', 
+            'metode_pembayaran_digital', 
+            'software_operasional', 
+            'sumber_penghasilan_digital'
+        ];
+        
         foreach ($arrayFields as $field) {
             if ($request->has($field)) {
                 $data[$field] = collect($request->$field)->implode(', ');
             }
         }
 
+        // Add default values for fields removed from the form but required by DB
+        $data['ikut_komunitas'] = $data['ikut_komunitas'] ?? 'tidak';
+        $data['is_producer'] = $data['is_producer'] ?? 0;
+        $data['proporsi_pendapatan_digital'] = $data['proporsi_pendapatan_digital'] ?? '0%';
+
         Kuesioner::create($data);
 
         return redirect()->route('kues.index')
-            ->with('success', 'Kuesioner berhasil disimpan');
+            ->with('success', 'Kuesioner berhasil disimpan. Terima kasih atas partisipasi Anda.');
     }
+
 
     public function edit($id)
     {

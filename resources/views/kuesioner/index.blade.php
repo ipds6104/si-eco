@@ -5,6 +5,18 @@
 <div class="container" style="margin-top:90px; margin-bottom: 50px;">
     <div class="row justify-content-center">
         <div class="col-lg-9">
+            
+            @if(session('success'))
+                <div class="card shadow-lg border-0 rounded-4 animate__animated animate__fadeIn">
+                    <div class="card-body p-5 text-center">
+                        <div class="display-1 text-success mb-4"><i class="fas fa-check-circle"></i></div>
+                        <h2 class="fw-bold text-dark">Terima Kasih!</h2>
+                        <p class="lead text-muted">{{ session('success') }}</p>
+                        <hr class="my-4">
+                        <a href="{{ route('welcome') }}" class="btn btn-warning btn-lg px-5 text-white fw-bold shadow-sm">Kembali ke Beranda</a>
+                    </div>
+                </div>
+            @else
             <div class="card shadow-lg border-0 rounded-4">
                 <div class="card-header text-white py-3" style="background: linear-gradient(135deg, #f79039 0%, #fbad6d 100%);">
                     <div class="d-flex align-items-center">
@@ -19,15 +31,6 @@
                 </div>
 
                 <div class="card-body p-4 p-md-5">
-                    @if(session('success'))
-                        <div class="alert alert-success border-0 shadow-sm rounded-4 p-4 mb-4 text-center">
-                            <div class="display-5 mb-3"><i class="fas fa-check-circle"></i></div>
-                            <h4 class="fw-bold">Terima Kasih!</h4>
-                            <p class="mb-0">{{ session('success') }}</p>
-                        </div>
-                    @endif
-
-
                     <!-- STEP INDICATOR -->
                     <div class="step-indicator mb-4">
                         <div class="step-line"></div>
@@ -54,53 +57,104 @@
                         <div id="progressBar" class="progress-bar bg-warning" role="progressbar" style="width: 25%; transition: width 0.4s ease;"></div>
                     </div>
 
-                    <form method="POST" action="{{ route('kues.store') }}" id="formKuesioner">
+                    <form method="POST" action="{{ route('kues.store') }}" id="formKuesioner" enctype="multipart/form-data">
                         @csrf
 
                         <!-- STEP 1: INFORMASI RESPONDEN -->
                         <div class="step-content">
                             <div class="section-title mb-4">
                                 <h5 class="fw-bold text-dark"><i class="fas fa-id-card me-2 text-warning"></i>I. INFORMASI RESPONDEN</h5>
-                                <p class="text-muted small">Silakan lengkapi data diri Anda sesuai dengan identitas resmi.</p>
                             </div>
                             
                             <div class="row g-3">
                                 <div class="col-md-12">
                                     <div class="form-floating mb-3">
-                                        <input type="text" name="nama" class="form-control" id="nama" placeholder="Nama Lengkap" data-required="true">
+                                        <input type="text" name="nama" class="form-control" id="nama" placeholder="Nama Lengkap" required>
                                         <label for="nama">Nama Lengkap</label>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-floating mb-3">
-                                        <input type="text" name="nik" id="nik" class="form-control" placeholder="NIK (16 Digit)" maxlength="16" minlength="16" data-required="true">
+                                        <input type="text" name="nik" id="nik" class="form-control" placeholder="NIK" maxlength="16" required>
                                         <label for="nik">NIK (16 Digit)</label>
-                                        <div class="invalid-feedback">NIK harus 16 digit angka.</div>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-floating mb-3">
-                                        <input type="tel" name="no_hp" id="no_hp" class="form-control" placeholder="No HP/WhatsApp" maxlength="14" data-required="true">
+                                        <input type="tel" name="no_hp" id="no_hp" class="form-control" placeholder="No HP" required>
                                         <label for="no_hp">Nomor HP / WhatsApp</label>
                                     </div>
                                 </div>
-                                <div class="col-md-12">
+
+                                <!-- WILAYAH -->
+                                <div class="col-md-4">
                                     <div class="form-floating mb-3">
-                                        <select name="kategori_responden" id="kategori_responden" class="form-select" data-required="true">
-                                            <option value="">Pilih Kategori</option>
-                                            <option value="Mahasiswa">Mahasiswa</option>
-                                            <option value="Wiraswasta">Wiraswasta / Pemilik Usaha</option>
-                                            <option value="Pegawai Negeri">Pegawai Negeri / BUMN</option>
-                                            <option value="Pegawai Swasta">Pegawai Swasta</option>
-                                            <option value="Lainnya">Lainnya</option>
+                                        <select id="kabupaten_id" name="kabupaten_id" class="form-select" required>
+                                            <option value="">Pilih Kabupaten</option>
+                                            @foreach($kabupatens as $kab)
+                                                <option value="{{ $kab->id }}">{{ $kab->name }}</option>
+                                            @endforeach
                                         </select>
-                                        <label for="kategori_responden">Kategori / Pekerjaan Responden</label>
+                                        <label>Kabupaten</label>
                                     </div>
                                 </div>
+                                <div class="col-md-4">
+                                    <div class="form-floating mb-3">
+                                        <select id="kecamatan_id" name="kecamatan_id" class="form-select" required disabled>
+                                            <option value="">Pilih Kecamatan</option>
+                                        </select>
+                                        <label>Kecamatan</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-floating mb-3">
+                                        <select id="desa_id" name="desa_id" class="form-select" required disabled>
+                                            <option value="">Pilih Desa</option>
+                                        </select>
+                                        <label>Desa</label>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-12">
+                                    <div class="form-floating mb-3">
+                                        <select name="pekerjaan" id="pekerjaan" class="form-select" required>
+                                            <option value="">Pilih Pekerjaan</option>
+                                            <option value="Ibu Rumah Tangga">Ibu Rumah Tangga</option>
+                                            <option value="Wiraswasta">Wiraswasta</option>
+                                            <option value="Pegawai Negeri/BUMN">Pegawai Negeri / BUMN</option>
+                                            <option value="Lainnya">Lainnya (Sebutkan)</option>
+                                        </select>
+                                        <label>Pekerjaan Utama</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-12 d-none" id="pekerjaan_lainnya_wrapper">
+                                    <div class="form-floating mb-3">
+                                        <input type="text" name="pekerjaan_lainnya" class="form-control" placeholder="Sebutkan pekerjaan">
+                                        <label>Sebutkan Pekerjaan</label>
+                                    </div>
+                                </div>
+
+                                <div class="col-12">
+                                    <div class="form-group mb-2">
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <label class="fw-bold text-muted small text-uppercase mb-0">Alamat & Geotagging</label>
+                                            <button type="button" class="btn btn-sm btn-primary shadow-sm" id="btn-lokasi-saya"><i class="fas fa-map-marker-alt me-1"></i> Gunakan Lokasi Saya</button>
+                                        </div>
+                                        <textarea name="alamat_usaha" class="form-control mb-3" rows="2" placeholder="Tuliskan alamat lengkap... (atau klik Gunakan Lokasi Saya)"></textarea>
+                                        
+                                        <!-- MAP PICKER -->
+                                        <div id="map" style="height: 300px; border-radius: 12px; border: 2px solid #eee;" class="mb-2"></div>
+                                        <p class="small text-muted"><i class="fas fa-info-circle me-1"></i> Geser pin atau klik pada peta untuk menentukan lokasi tepat Anda.</p>
+                                        
+                                        <input type="hidden" name="latitude" id="lat">
+                                        <input type="hidden" name="longitude" id="lng">
+                                    </div>
+                                </div>
+
                                 <div class="col-md-12">
                                     <div class="card bg-light border-0 rounded-3 p-3">
                                         <label class="fw-bold mb-2">Apakah Anda memiliki usaha (offline atau online)?</label>
-                                        <select name="punya_usaha" id="punya_usaha" class="form-select form-select-lg border-warning shadow-sm" data-required="true">
+                                        <select name="punya_usaha" id="punya_usaha" class="form-select form-select-lg border-warning" required>
                                             <option value="">Pilih Jawaban</option>
                                             <option value="ya">Ya, saya memiliki usaha</option>
                                             <option value="tidak">Tidak, saya tidak memiliki usaha</option>
@@ -109,10 +163,9 @@
                                 </div>
                             </div>
 
+
                             <div class="d-flex justify-content-end mt-5">
-                                <button type="button" class="btn btn-warning btn-lg px-5 text-white fw-bold shadow-sm next-btn">
-                                    Lanjut <i class="fas fa-chevron-right ms-2"></i>
-                                </button>
+                                <button type="button" class="btn btn-warning btn-lg px-5 text-white fw-bold next-btn">Lanjut <i class="fas fa-chevron-right ms-2"></i></button>
                             </div>
                         </div>
 
@@ -120,189 +173,169 @@
                         <div class="step-content d-none">
                             <div class="section-title mb-4">
                                 <h5 class="fw-bold text-dark"><i class="fas fa-store me-2 text-warning"></i>II. KARAKTERISTIK USAHA</h5>
-                                <p class="text-muted small">Berikan informasi mendasar mengenai operasional usaha Anda.</p>
                             </div>
 
                             <div class="row g-3">
                                 <div class="col-12">
                                     <div class="form-group mb-3">
                                         <label class="fw-bold text-muted small text-uppercase">Kegiatan Utama Usaha</label>
-                                        <input type="text" name="kegiatan_utama" class="form-control form-control-lg" placeholder="Contoh: Produksi Kripik Pisang, Jasa Desain Grafis" data-required="true">
+                                        <input type="text" name="kegiatan_utama" class="form-control form-control-lg" placeholder="Contoh: Produksi Kripik Pisang">
                                     </div>
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-md-12">
                                     <div class="form-group mb-3">
                                         <label class="fw-bold text-muted small text-uppercase">Jenis Usaha</label>
-                                        <select name="jenis_usaha" class="form-select" data-required="true">
+                                        <select name="jenis_usaha" class="form-select">
                                             <option value="">Pilih Jenis</option>
-                                            <option value="1">Produksi Barang Sendiri</option>
-                                            <option value="2">Reselling / Perdagangan</option>
-                                            <option value="3">Kuliner (Makan & Minum)</option>
-                                            <option value="4">Penyediaan Jasa lainnya</option>
+                                            <option value="Affiliate Marketing">Affiliate Marketing</option>
+                                            <option value="Jasa Digital">Jasa Digital (Desain, Admin, dll)</option>
+                                            <option value="Content Creator">Content Creator</option>
+                                            <option value="Produksi Barang Sendiri">Produksi Barang Sendiri</option>
+                                            <option value="Reselling / Perdagangan">Reselling / Perdagangan</option>
+                                            <option value="Kuliner">Kuliner (Makan & Minum)</option>
+                                            <option value="Lainnya">Lainnya</option>
                                         </select>
                                     </div>
                                 </div>
-                                <div class="col-md-6">
-                                    <div class="form-group mb-3">
-                                        <label class="fw-bold text-muted small text-uppercase">Lokasi Usaha Utama</label>
-                                        <select name="alamat_usaha" class="form-select" data-required="true">
-                                            <option value="">Pilih Lokasi</option>
-                                            <option value="rumah">Rumah Tinggal</option>
-                                            <option value="ruko">Ruko / Mal / Bangunan Toko</option>
-                                            <option value="keliling">Keliling / Kaki Lima</option>
-                                            <option value="online">Hanya Daring (Online)</option>
-                                            <option value="pasar">Pasar Tradisional</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-12">
-                                    <div class="form-group mb-3">
-                                        <label class="fw-bold text-muted small text-uppercase text-primary"><i class="fas fa-globe me-1"></i> Platform Digital yang Digunakan</label>
-                                        <div class="row mt-2 bg-light p-3 rounded-3 g-2 mx-0">
-                                            <div class="col-md-6">
-                                                <div class="form-check"><input class="form-check-input" type="checkbox" name="platform_digital[]" value="Social Media"> <label class="form-check-label">Media Sosial (IG/WA/FB/TikTok)</label></div>
-                                                <div class="form-check"><input class="form-check-input" type="checkbox" name="platform_digital[]" value="Marketplace"> <label class="form-check-label">Marketplace (Shopee/Tokopedia)</label></div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="form-check"><input class="form-check-input" type="checkbox" name="platform_digital[]" value="Website"> <label class="form-check-label">Website Sendiri</label></div>
-                                                <div class="form-check"><input class="form-check-input" type="checkbox" name="platform_digital[]" value="On-demand"> <label class="form-check-label">Ojek/Food Delivery Online</label></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+
                                 <div class="col-md-12">
                                     <div class="form-group mb-3">
                                         <label class="fw-bold text-muted small text-uppercase">Omset Rata-rata per Bulan</label>
-                                        <div class="input-group input-group-lg">
-                                            <span class="input-group-text bg-white border-end-0">Rp</span>
-                                            <input type="number" name="omzet" class="form-control border-start-0" placeholder="0" data-required="true">
+                                        <div class="input-group">
+                                            <span class="input-group-text bg-light border-0">Rp</span>
+                                            <input type="number" name="omzet" class="form-control" placeholder="0">
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
                             <div class="d-flex justify-content-between mt-5">
-                                <button type="button" class="btn btn-outline-secondary btn-lg px-4 prev-btn"><i class="fas fa-chevron-left me-2"></i> Kembali</button>
-                                <button type="button" class="btn btn-warning btn-lg px-5 text-white fw-bold shadow-sm next-btn">Lanjut <i class="fas fa-chevron-right ms-2"></i></button>
+                                <button type="button" class="btn btn-outline-secondary btn-lg px-4 prev-btn">Kembali</button>
+                                <button type="button" class="btn btn-warning btn-lg px-5 text-white fw-bold next-btn">Lanjut <i class="fas fa-chevron-right ms-2"></i></button>
                             </div>
                         </div>
 
-                        <!-- STEP 3: EKONOMI DIGITAL DEEP-DIVE -->
+                        <!-- STEP 3: AKTIVITAS DIGITAL -->
                         <div class="step-content d-none">
                             <div class="section-title mb-4">
-                                <h5 class="fw-bold text-dark"><i class="fas fa-laptop-code me-2 text-warning"></i>III. PENETRASI EKONOMI DIGITAL</h5>
-                                <p class="text-muted small">Detail pemanfaatan teknologi informasi dalam bisnis Anda.</p>
+                                <h5 class="fw-bold text-dark"><i class="fas fa-laptop-code me-2 text-warning"></i>III. AKTIVITAS DIGITAL</h5>
                             </div>
 
                             <div class="row g-3">
-                                <div class="col-md-12">
-                                    <div class="form-group mb-3">
-                                        <label class="fw-bold text-muted small text-uppercase d-block mb-2">Proporsi Pendapatan dari Transaksi Online</label>
-                                        <div class="btn-group w-100 shadow-sm" role="group">
-                                            <input type="radio" name="proporsi_pendapatan_digital" value="0%" class="btn-check" id="prop0" autocomplete="off" checked>
-                                            <label class="btn btn-outline-warning py-3" for="prop0">0%</label>
-                                            
-                                            <input type="radio" name="proporsi_pendapatan_digital" value="1-25%" class="btn-check" id="prop25" autocomplete="off">
-                                            <label class="btn btn-outline-warning py-3" for="prop25">1-25%</label>
-                                            
-                                            <input type="radio" name="proporsi_pendapatan_digital" value="26-50%" class="btn-check" id="prop50" autocomplete="off">
-                                            <label class="btn btn-outline-warning py-3" for="prop50">26-50%</label>
-                                            
-                                            <input type="radio" name="proporsi_pendapatan_digital" value="51-75%" class="btn-check" id="prop75" autocomplete="off">
-                                            <label class="btn btn-outline-warning py-3" for="prop75">51-75%</label>
-                                            
-                                            <input type="radio" name="proporsi_pendapatan_digital" value="76-100%" class="btn-check" id="prop100" autocomplete="off">
-                                            <label class="btn btn-outline-warning py-3" for="prop100">76-100%</label>
+                                <!-- SUMBER PENGHASILAN -->
+                                <div class="col-12">
+                                    <label class="fw-bold text-muted small text-uppercase mb-2">Sumber Penghasilan Digital (Bisa pilih lbih dari satu)</label>
+                                    <div class="bg-light p-3 rounded-3 border-start border-warning border-4">
+                                        @foreach(['Penjualan Barang', 'Komisi Affiliate', 'Iklan (Adsense, dll)', 'Jasa', 'Live Streaming', 'Lainnya'] as $item)
+                                        <div class="form-check mb-1">
+                                            <input class="form-check-input" type="checkbox" name="sumber_penghasilan_digital[]" value="{{ $item }}" id="income_{{ $loop->index }}">
+                                            <label class="form-check-label" for="income_{{ $loop->index }}">{{ $item }}</label>
+                                        </div>
+                                        @endforeach
+                                    </div>
+                                </div>
+
+                                <!-- PLATFORM -->
+                                <div class="col-12 py-2">
+                                    <label class="fw-bold text-muted small text-uppercase mb-2">Platform Digital yang Digunakan</label>
+                                    <div class="bg-light p-3 rounded-3 border-start border-warning border-4">
+                                        <div class="form-check mb-1">
+                                            <input class="form-check-input" type="checkbox" name="platform_digital_v2[]" value="Marketplace">
+                                            <label class="form-check-label">Marketplace (Shopee, Tokopedia, dll)</label>
+                                        </div>
+                                        <div class="form-check mb-1">
+                                            <input class="form-check-input" type="checkbox" name="platform_digital_v2[]" value="Social Media">
+                                            <label class="form-check-label">Media Sosial (Instagram, TikTok, dll)</label>
+                                        </div>
+                                        <div class="form-check mb-1">
+                                            <input class="form-check-input" type="checkbox" name="platform_digital_v2[]" value="Freelance">
+                                            <label class="form-check-label">Platform Freelance (Fiverr, Upwork, dll)</label>
+                                        </div>
+                                        <div class="form-check mb-1">
+                                            <input class="form-check-input" type="checkbox" name="platform_digital_v2[]" value="WhatsApp">
+                                            <label class="form-check-label">WhatsApp / Pribadi</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" name="platform_digital_v2[]" value="Lainnya">
+                                            <label class="form-check-label">Lainnya</label>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-6 text-warning">
-                                    <div class="form-group mb-3">
-                                        <label class="fw-bold text-muted small text-uppercase mb-2"><i class="fas fa-credit-card me-1"></i> Metode Pembayaran Digital</label>
-                                        <div class="bg-light p-3 rounded-3 border-start border-warning border-4">
-                                            <div class="form-check mb-1"><input class="form-check-input" type="checkbox" name="metode_pembayaran_digital[]" value="QRIS"> <label class="form-check-label">QRIS / LinkAja</label></div>
-                                            <div class="form-check mb-1"><input class="form-check-input" type="checkbox" name="metode_pembayaran_digital[]" value="Transfer Bank"> <label class="form-check-label">Mobile/Internet Banking</label></div>
-                                            <div class="form-check mb-1"><input class="form-check-input" type="checkbox" name="metode_pembayaran_digital[]" value="E-wallet"> <label class="form-check-label">Dana / OVO / Gopay</label></div>
-                                            <div class="form-check"><input class="form-check-input" type="checkbox" name="metode_pembayaran_digital[]" value="Payment Gateway"> <label class="form-check-label">Midtrans / Xendit</label></div>
+
+                                <!-- UPDATE DIGITAL -->
+                                <div class="col-md-6 mb-3">
+                                    <label class="fw-bold text-muted small text-uppercase mb-2">Lama Menjalankan Aktivitas (Dalam bulan)</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-white"><i class="fas fa-calendar-alt text-warning"></i></span>
+                                        <input type="number" name="lama_aktivitas_digital" class="form-control border-start-0" placeholder="Misal: 12" min="1">
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="fw-bold text-muted small text-uppercase mb-2">Apakah Aktivitas ini Menambah Penghasilan?</label>
+                                    <select name="tambah_penghasilan_digital" class="form-select border-start border-warning border-4">
+                                        <option value="">Pilih</option>
+                                        <option value="ya">Ya, menambah</option>
+                                        <option value="tidak">Tidak</option>
+                                    </select>
+                                </div>
+
+                                <!-- PEMBAYARAN -->
+                                <div class="col-12 py-2">
+                                    <label class="fw-bold text-muted small text-uppercase mb-2">Metode Pembayaran Digital</label>
+                                    <div class="bg-light p-3 rounded-3 border-start border-warning border-4">
+                                        @foreach(['QRIS/Link Aja', 'Mobile/Internet Banking', 'Dana/OVO/GoPay', 'Lainnya'] as $item)
+                                        <div class="form-check mb-1">
+                                            <input class="form-check-input" type="checkbox" name="metode_pembayaran_digital[]" value="{{ $item }}" id="pay_{{ $loop->index }}">
+                                            <label class="form-check-label" for="pay_{{ $loop->index }}">{{ $item }}</label>
                                         </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6 text-warning">
-                                    <div class="form-group mb-3">
-                                        <label class="fw-bold text-muted small text-uppercase mb-2"><i class="fas fa-desktop me-1"></i> Software Operasional</label>
-                                        <div class="bg-light p-3 rounded-3 border-start border-warning border-4">
-                                            <div class="form-check mb-1"><input class="form-check-input" type="checkbox" name="software_operasional[]" value="POS"> <label class="form-check-label">Kasir / POS (Point of Sale)</label></div>
-                                            <div class="form-check mb-1"><input class="form-check-input" type="checkbox" name="software_operasional[]" value="Accounting"> <label class="form-check-label">Akuntansi / Keuangan</label></div>
-                                            <div class="form-check mb-1"><input class="form-check-input" type="checkbox" name="software_operasional[]" value="Inventory"> <label class="form-check-label">Manajemen Stok</label></div>
-                                            <div class="form-check"><input class="form-check-input" type="checkbox" name="software_operasional[]" value="Analytics"> <label class="form-check-label">Data Analytics / CRM</label></div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-12">
-                                    <div class="form-group mb-3">
-                                        <label class="fw-bold text-muted small text-uppercase">Ingin bergabung/sudah bergabung komunitas digital?</label>
-                                        <select name="ikut_komunitas" id="ikut_komunitas" class="form-select">
-                                            <option value="tidak">Belum / Tidak Bergabung</option>
-                                            <option value="ya">Sudah Bergabung</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-12 d-none" id="nama_komunitas_wrapper">
-                                    <div class="form-group mb-3">
-                                        <label class="fw-bold text-muted small text-uppercase">Nama Komunitas</label>
-                                        <input type="text" name="nama_komunitas" class="form-control" placeholder="Tuliskan nama komunitas bisnis Anda">
+                                        @endforeach
                                     </div>
                                 </div>
                             </div>
 
                             <div class="d-flex justify-content-between mt-5">
-                                <button type="button" class="btn btn-outline-secondary btn-lg px-4 prev-btn"><i class="fas fa-chevron-left me-2"></i> Kembali</button>
-                                <button type="button" class="btn btn-warning btn-lg px-5 text-white fw-bold shadow-sm next-btn">Lanjut <i class="fas fa-chevron-right ms-2"></i></button>
+                                <button type="button" class="btn btn-outline-secondary btn-lg px-4 prev-btn">Kembali</button>
+                                <button type="button" class="btn btn-warning btn-lg px-5 text-white fw-bold next-btn">Lanjut <i class="fas fa-chevron-right ms-2"></i></button>
                             </div>
                         </div>
 
-                        <!-- STEP 4: PRODUSER DIGITAL & FINAL -->
+                        <!-- STEP 4: FINAL -->
                         <div class="step-content d-none">
                             <div class="section-title mb-4">
-                                <h5 class="fw-bold text-dark"><i class="fas fa-rocket me-2 text-warning"></i>IV. PRODUSER & KONFIRMASI</h5>
-                                <p class="text-muted small">Tahap akhir klasifikasi dan pengiriman data.</p>
+                                <h5 class="fw-bold text-dark"><i class="fas fa-camera me-2 text-warning"></i>IV. FINALISASI DATA</h5>
                             </div>
 
-                            <div class="card mb-4 border-dashed border-2">
-                                <div class="card-body bg-light-warning">
-                                    <label class="fw-bold h6 mb-3">Apakah usaha Anda menghasilkan/membuat produk dalam bentuk digital?</label>
-                                    <p class="text-muted small mb-3">Pilih "Ya" jika Anda membuat: Software, Aplikasi mobile, Website builder, Jasa Desain Grafis Digital, Kreator Konten Video/Musik/Ilustrasi.</p>
-                                    <div class="d-flex gap-4">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="radio" name="is_producer" value="1" id="prodYa">
-                                            <label class="form-check-label fw-bold" for="prodYa">Ya, Kami Produser Digital</label>
+                            <div class="card mb-4 border-2">
+                                <div class="card-body">
+                                    <label class="fw-bold mb-3 d-block">Unggah Foto Rumah (Tampak Depan)</label>
+                                    <div class="upload-zone text-center p-4 border rounded-3 bg-light">
+                                        <i class="fas fa-camera fa-3x text-muted mb-2 me-3"></i>
+                                        <i class="fas fa-image fa-3x text-muted mb-2"></i>
+                                        <div class="mt-3">
+                                            <input type="file" name="foto_rumah" class="form-control" accept="image/*" required id="foto_rumah_input">
                                         </div>
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="radio" name="is_producer" value="0" id="prodTidak" checked>
-                                            <label class="form-check-label fw-bold" for="prodTidak">Bukan Produser Digital</label>
-                                        </div>
+                                        <p class="small text-muted mt-2">Pilih file dari galeri atau gunakan <b>Kamera Langsung</b> pada HP Anda (Format: JPG, PNG Maks 2MB)</p>
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="text-center p-4 bg-white border rounded-4 mt-5">
-                                <div class="display-6 text-success mb-3"><i class="fas fa-check-circle"></i></div>
-                                <h5 class="fw-bold">Data Anda Siap Dikirim</h5>
-                                <p class="text-muted mb-0">Terima kasih telah berpartisipasi dalam pemetaan ekonomi digital ini.</p>
-                            </div>
-
                             <div class="d-flex justify-content-between mt-5">
-                                <button type="button" class="btn btn-outline-secondary btn-lg px-4 prev-btn"><i class="fas fa-chevron-left me-2"></i> Kembali</button>
-                                <button type="submit" class="btn btn-success btn-lg px-5 fw-bold shadow ripple-effect" id="btnSubmit">KIRIM KUESIONER <i class="fas fa-paper-plane ms-2"></i></button>
+                                <button type="button" class="btn btn-outline-secondary btn-lg px-4 prev-btn">Kembali</button>
+                                <button type="submit" class="btn btn-success btn-lg px-5 fw-bold shadow">KIRIM KUESIONER <i class="fas fa-paper-plane ms-2"></i></button>
                             </div>
                         </div>
 
                     </form>
+                    @endif
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<!-- LEAFLET CSS & JS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 @endsection
 
@@ -315,6 +348,102 @@ document.addEventListener("DOMContentLoaded", function () {
     const stepContents = document.querySelectorAll(".step-content");
     const indicatorItems = document.querySelectorAll(".step-item");
     const kuesForm = document.getElementById("formKuesioner");
+
+    // Initialize Map
+    let map, marker;
+    function initMap() {
+        if (map) return;
+        
+        // Default coordinates (Mempawah/Pontianak area)
+        const defaultLat = -0.0247;
+        const defaultLng = 109.3404;
+
+        map = L.map('map').setView([defaultLat, defaultLng], 13);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
+
+        marker = L.marker([defaultLat, defaultLng], {draggable: true}).addTo(map);
+        
+        document.getElementById('lat').value = defaultLat;
+        document.getElementById('lng').value = defaultLng;
+
+        function updateLocation(lat, lng) {
+            document.getElementById('lat').value = lat;
+            document.getElementById('lng').value = lng;
+            
+            // Reverse Geocoding via Nominatim
+            fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`)
+                .then(res => res.json())
+                .then(data => {
+                    const alamatInput = document.querySelector('textarea[name="alamat_usaha"]');
+                    if (alamatInput) {
+                        let baseAddress = (data && data.display_name) ? data.display_name : '';
+                        alamatInput.value = `${baseAddress}\n(Lat: ${lat}, Lng: ${lng})`;
+                    }
+                })
+                .catch(err => {
+                    console.error("Geocoding error:", err);
+                    const alamatInput = document.querySelector('textarea[name="alamat_usaha"]');
+                    if (alamatInput) alamatInput.value = `(Lat: ${lat}, Lng: ${lng})`;
+                });
+        }
+
+        marker.on('dragend', function (e) {
+            const pos = marker.getLatLng();
+            updateLocation(pos.lat, pos.lng);
+        });
+        
+        map.on('click', function(e) {
+            marker.setLatLng(e.latlng);
+            updateLocation(e.latlng.lat, e.latlng.lng);
+        });
+
+        // Handle "Gunakan Lokasi Saya" button
+        const btnLokasi = document.getElementById('btn-lokasi-saya');
+        if (btnLokasi) {
+            btnLokasi.addEventListener('click', function() {
+                const btnOrigText = this.innerHTML;
+                this.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i> Mencari...';
+                this.disabled = true;
+
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(position => {
+                        const lat = position.coords.latitude;
+                        const lng = position.coords.longitude;
+                        map.setView([lat, lng], 16);
+                        marker.setLatLng([lat, lng]);
+                        updateLocation(lat, lng);
+
+                        this.innerHTML = '<i class="fas fa-check me-1"></i> Lokasi Ditemukan';
+                        setTimeout(() => {
+                            this.innerHTML = btnOrigText;
+                            this.disabled = false;
+                        }, 2000);
+                    }, error => {
+                        alert("Gagal mengakses lokasi. Pastikan izin lokasi (GPS) aktif di browser/HP Anda.");
+                        this.innerHTML = btnOrigText;
+                        this.disabled = false;
+                    });
+                } else {
+                    alert("Browser Anda tidak mendukung Geolokasi.");
+                    this.innerHTML = btnOrigText;
+                    this.disabled = false;
+                }
+            });
+        }
+
+        // Try auto-geolocate on first load
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(position => {
+                const lat = position.coords.latitude;
+                const lng = position.coords.longitude;
+                map.setView([lat, lng], 16);
+                marker.setLatLng([lat, lng]);
+                updateLocation(lat, lng);
+            });
+        }
+    }
 
     function updateStep(targetStep) {
         stepContents.forEach((content, idx) => {
@@ -329,176 +458,116 @@ document.addEventListener("DOMContentLoaded", function () {
 
         const progressBar = document.getElementById("progressBar");
         if (progressBar) {
-            const progressPercent = ((targetStep + 1) / stepContents.length) * 100;
-            progressBar.style.width = progressPercent + "%";
+            progressBar.style.width = ((targetStep + 1) / 4) * 100 + "%";
         }
         
         currentStep = targetStep;
-        toggleFieldsRequirement(targetStep);
+        
+        // Init map if visible
+        if (targetStep === 1) {
+            setTimeout(initMap, 500); // Small delay for rendering
+        }
     }
 
-    function toggleFieldsRequirement(activeStepIdx) {
-        stepContents.forEach((step, idx) => {
-            const inputs = step.querySelectorAll("input, select, textarea");
-            inputs.forEach(input => {
-                if (idx === activeStepIdx && input.dataset.required === "true") {
-                    input.setAttribute("required", "required");
-                } else {
-                    input.removeAttribute("required");
-                }
-            });
+    // Region Dropdowns logic
+    const kabSelect = document.getElementById('kabupaten_id');
+    const kecSelect = document.getElementById('kecamatan_id');
+    const desaSelect = document.getElementById('desa_id');
+
+    if (kabSelect) {
+        kabSelect.addEventListener('change', function() {
+            loadRegions(this.value, kecSelect, 'Pilih Kecamatan');
+            desaSelect.innerHTML = '<option value="">Pilih Desa</option>';
+            desaSelect.disabled = true;
         });
     }
 
-    function validateCurrentStep() {
-        const activeContainer = stepContents[currentStep];
-        const requiredInputs = activeContainer.querySelectorAll("[required]");
-        
-        for (let input of requiredInputs) {
-            if (!input.value.trim()) {
-                Swal.fire({ icon: 'warning', title: 'Data Belum Lengkap', text: 'Mohon isi semua field yang wajib diisi.' });
-                input.classList.add('is-invalid');
-                input.focus();
-                return false;
-            }
-            input.classList.remove('is-invalid');
-
-            // NIK specifically
-            if (input.id === 'nik') {
-                const nikVal = input.value.trim();
-                if (!/^\d{16}$/.test(nikVal)) {
-                    Swal.fire({ icon: 'error', title: 'NIK Tidak Valid', text: 'NIK harus berisi tepat 16 digit angka.' });
-                    input.classList.add('is-invalid');
-                    return false;
-                }
-            }
-        }
-        return true;
+    if (kecSelect) {
+        kecSelect.addEventListener('change', function() {
+            loadRegions(this.value, desaSelect, 'Pilih Desa');
+        });
     }
 
-    // Step Navigation
+    function loadRegions(parentId, targetSelect, placeholder) {
+        if (!parentId) {
+            targetSelect.innerHTML = `<option value="">${placeholder}</option>`;
+            targetSelect.disabled = true;
+            return;
+        }
+
+        fetch(`/kuesioner/regions/${parentId}`)
+            .then(res => res.json())
+            .then(data => {
+                targetSelect.innerHTML = `<option value="">${placeholder}</option>`;
+                data.forEach(region => {
+                    targetSelect.innerHTML += `<option value="${region.id}">${region.name}</option>`;
+                });
+                targetSelect.disabled = false;
+            });
+    }
+
+    // Pekerjaan Lainnya logic
+    const pekerjaanSelect = document.getElementById('pekerjaan');
+    if (pekerjaanSelect) {
+        pekerjaanSelect.addEventListener('change', function() {
+            document.getElementById('pekerjaan_lainnya_wrapper').classList.toggle('d-none', this.value !== 'Lainnya');
+        });
+    }
+
+    // Navigation logic
     document.querySelectorAll(".next-btn").forEach(btn => {
         btn.addEventListener("click", function() {
-            if (validateCurrentStep()) {
-                historyStep.push(currentStep);
-                
-                // Shortcut Logic
-                if (currentStep === 0) {
-                    const statusUsaha = document.getElementById("punya_usaha").value;
-                    if (statusUsaha === 'tidak') {
-                        updateStep(stepContents.length - 1);
-                        return;
-                    }
+            // Basic validation
+            const activeStep = stepContents[currentStep];
+            const inputs = activeStep.querySelectorAll('input[required], select[required]');
+            let valid = true;
+            inputs.forEach(i => {
+                if (!i.value) {
+                    i.classList.add('is-invalid');
+                    valid = false;
+                } else {
+                    i.classList.remove('is-invalid');
                 }
-                
-                updateStep(currentStep + 1);
+            });
+
+            if (!valid) {
+                 Swal.fire('Perhatian', 'Mohon lengkapi semua field wajib diisi.', 'warning');
+                 return;
             }
+
+            historyStep.push(currentStep);
+            
+            // Skip logic if No Business
+            if (currentStep === 0 && document.getElementById('punya_usaha').value === 'tidak') {
+                updateStep(3); // Jump to final
+                return;
+            }
+
+            updateStep(currentStep + 1);
         });
     });
 
     document.querySelectorAll(".prev-btn").forEach(btn => {
         btn.addEventListener("click", function() {
             if (historyStep.length > 0) {
-                const prev = historyStep.pop();
-                updateStep(prev);
+                updateStep(historyStep.pop());
             }
         });
     });
 
-    // Dynamic field behavior
-    const ikutKomunitas = document.getElementById("ikut_komunitas");
-    if (ikutKomunitas) {
-        ikutKomunitas.addEventListener("change", function() {
-            document.getElementById("nama_komunitas_wrapper").classList.toggle("d-none", this.value !== 'ya');
-        });
-    }
-
-    // Submission Handler
-    kuesForm.addEventListener("submit", function(e) {
-        e.preventDefault();
-        
-        if (!validateCurrentStep()) return;
-
-        Swal.fire({
-            title: "Konfirmasi Kirim",
-            text: "Pastikan semua data sudah terisi dengan benar. Kirim sekarang?",
-            icon: "question",
-            showCancelButton: true,
-            confirmButtonColor: "#f79039",
-            cancelButtonColor: "#aaa",
-            confirmButtonText: "Ya, Kirim!",
-            cancelButtonText: "Periksa Lagi"
-        }).then((res) => {
-            if (res.isConfirmed) {
-                kuesForm.submit();
-            }
-        });
-    });
-
-    // Initial setup
-    updateStep(0);
+    // Handle initial state
+    if (document.getElementById('formKuesioner')) updateStep(0);
 });
 </script>
 
 <style>
-/* Modern Step UI */
-.step-indicator {
-    display: flex;
-    justify-content: space-between;
-    position: relative;
-    z-index: 1;
-}
-.step-line {
-    position: absolute;
-    top: 20px;
-    left: 40px;
-    right: 40px;
-    height: 3px;
-    background: #e9ecef;
-    z-index: -1;
-}
-.step-item {
-    text-align: center;
-    background: #fff;
-    cursor: default;
-    flex: 1;
-}
-.step-number {
-    width: 40px;
-    height: 40px;
-    line-height: 36px;
-    display: inline-block;
-    border-radius: 50%;
-    background: #fff;
-    border: 2px solid #e9ecef;
-    color: #adb5bd;
-    font-weight: bold;
-    margin-bottom: 5px;
-    transition: all 0.3s ease;
-}
-.step-label {
-    display: block;
-    font-size: 11px;
-    color: #adb5bd;
-    text-transform: uppercase;
-    font-weight: 600;
-}
-.step-item.active .step-number {
-    border-color: #f79039;
-    color: #f79039;
-    box-shadow: 0 0 0 4px rgba(247, 144, 57, 0.1);
-}
+.step-indicator { display: flex; justify-content: space-between; position: relative; z-index: 1; }
+.step-line { position: absolute; top: 20px; left: 40px; right: 40px; height: 3px; background: #e9ecef; z-index: -1; }
+.step-item { text-align: center; background: transparent; flex: 1; }
+.step-number { width: 40px; height: 40px; line-height: 36px; display: inline-block; border-radius: 50%; background: #fff; border: 2px solid #e9ecef; color: #adb5bd; font-weight: bold; margin-bottom: 5px; }
+.step-label { display: block; font-size: 11px; color: #adb5bd; text-transform: uppercase; font-weight: 600; }
+.step-item.active .step-number { border-color: #f79039; color: #f79039; }
 .step-item.active .step-label { color: #f79039; }
-.step-item.completed .step-number {
-    background: #f79039;
-    border-color: #f79039;
-    color: #fff;
-}
-.bg-light-warning { background-color: #fffaf0; }
-.border-dashed { border-style: dashed !important; }
-.tracking-wider { letter-spacing: 1px; }
-
-/* Effects */
-.ripple-effect:active { transform: scale(0.98); opacity: 0.9; }
+.step-item.completed .step-number { background: #f79039; border-color: #f79039; color: #fff; }
 </style>
 @endsection
