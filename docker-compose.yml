@@ -33,13 +33,7 @@ services:
       retries: 5
       start_period: 90s
     volumes:
-      - ./app:/app/app
-      - ./resources:/app/resources
-      - ./routes:/app/routes
-      - ./database:/app/database
       - storage_data:/app/storage
-      - ./public:/app/public
-      - .env:/app/.env
     # Traefik labels dikelola otomatis oleh Coolify — JANGAN tambah manual
     # Port routing dikonfigurasi di Dashboard Coolify (Domain field)
 
