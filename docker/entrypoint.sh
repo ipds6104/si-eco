@@ -14,8 +14,10 @@ if [ "$APP_ENV" = "production" ]; then
     echo "Running migrations..."
     php /app/artisan migrate --force --no-interaction 2>&1 || echo "⚠️  Migration failed (DB mungkin belum siap), skipping..."
 
-    # Cache configurations (toleransi jika gagal)
-    echo "Caching config, routes, and views..."
+    # Clear and Cache configurations (toleransi jika gagal)
+    echo "Clearing and Caching config, routes, and views..."
+    php /app/artisan config:clear 2>&1
+    php /app/artisan view:clear 2>&1
     php /app/artisan optimize 2>&1 || echo "⚠️  Optimize failed, skipping..."
     php /app/artisan view:cache 2>&1 || echo "⚠️  View cache failed, skipping..."
 
