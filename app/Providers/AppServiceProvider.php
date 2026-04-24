@@ -25,7 +25,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        if (config('app.env') !== 'local' || str_starts_with(config('app.url'), 'https://')) {
+        // Force HTTPS if behind a secure proxy or if env is not local
+        if (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') {
+            URL::forceScheme('https');
+        } elseif (config('app.env') !== 'local') {
             URL::forceScheme('https');
         }
 
