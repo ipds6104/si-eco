@@ -15,6 +15,11 @@ class PegawaiSeeder extends Seeder
      */
     public function run(): void
     {
+        // Bersihkan tabel pegawai agar ID reset
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        DB::table('pegawai')->truncate();
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+
         $filePath = database_path('seeders/data/pegawai.json');
 
         if (!File::exists($filePath)) {

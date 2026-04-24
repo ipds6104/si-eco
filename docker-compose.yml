@@ -37,6 +37,8 @@ services:
       - ./resources:/app/resources
       - ./routes:/app/routes
       - ./database:/app/database
+      - ./storage:/app/storage
+      - ./public:/app/public
       - .env:/app/.env
     # Traefik labels dikelola otomatis oleh Coolify — JANGAN tambah manual
     # Port routing dikonfigurasi di Dashboard Coolify (Domain field)

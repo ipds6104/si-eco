@@ -51,7 +51,7 @@
             <tr>
                 <th>No</th>
                 <th>Nama</th>
-                <th>NIK</th>
+                <th>Wilayah (Desa/RT)</th>
                 <th>Kepemilikan Usaha</th>
                 <th>Kegiatan Utama</th>
                 <th>Aksi</th>
@@ -69,7 +69,10 @@
 
                 <td>{{ $item->nama }}</td>
 
-                <td>{{ $item->npm }}</td>
+                <td>
+                    <small class="d-block fw-bold text-primary">{{ $item->desa->name ?? '-' }}</small>
+                    <small class="text-muted">{{ $item->sls->name ?? '-' }}</small>
+                </td>
 
                 <td>
                     @if($item->punya_usaha == 'ya')

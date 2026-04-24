@@ -14,8 +14,10 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        // Kosongkan tabel users sebelum insert
-        DB::table('users')->delete();
+        // Bersihkan tabel users dengan truncate agar ID reset
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        User::truncate();
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
         $filePath = database_path('seeders/data/users.json');
 
@@ -33,14 +35,35 @@ class UserSeeder extends Seeder
         }
 
         foreach ($userList as $user) {
+            $nip = trim($user['nip_lama']);
+            
+            // Cek apakah NIP ada di tabel pegawai, jika tidak buatkan dummy agar tidak error FK
+            $exists = DB::table('pegawai')->where('nip_lama', $nip)->exists();
+            if (!$exists) {
+                DB::table('pegawai')->insert([
+                    'nama' => $user['username'], // gunakan username sebagai nama sementara
+                    'nip_lama' => $nip,
+                    'nip_baru' => $nip,
+                    'jabatan' => 'Lainnya',
+                    'golongan_akhir' => '-',
+                    'pendidikan' => '-',
+                    'jenis_kelamin' => 'LK',
+                    'email' => trim($user['email']),
+                ]);
+            }
+
+            // Ambil bagian depan email sebagai password default
+            $emailParts = explode('@', trim($user['email']));
+            $defaultPassword = $emailParts[0] ?? 'password123';
+
             User::create([
                 'id'        => $user['id'],
-                'nip_lama'  => $user['nip_lama'],
-                'username'  => $user['username'],
-                'password'  => bcrypt('password123'),
-                'email'     => $user['email'],
+                'nip_lama'  => $nip,
+                'username'  => trim($user['username']),
+                'password'  => bcrypt($defaultPassword),
+                'email'     => trim($user['email']),
                 'id_role'   => $user['id_role'],
-                'tim_id'    => $user['tim_id'] ?? null, // biarkan null kalau tidak ada
+                'tim_id'    => $user['tim_id'] ?? null,
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);

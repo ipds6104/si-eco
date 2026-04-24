@@ -33,7 +33,7 @@
             <ul class="nav nav-secondary">
                 <li class="nav-item {{ request()->is('dashboard*') ? 'active' : '' }}">
                     @if(in_array(Auth::user()->id_role, [1, 2]))
-                    <a href="{{ route('welcome.page') }}">
+                    <a href="{{ route('welcome') }}">
                         <i class="fas fa-home"></i>
                         <p>Welcome Page</p>
                     </a>

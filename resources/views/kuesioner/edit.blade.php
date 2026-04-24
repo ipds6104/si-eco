@@ -24,6 +24,15 @@
                 <div class="row g-3 mb-5">
                     <div class="col-md-12">
                         <div class="form-group mb-3">
+                            <label class="fw-bold small text-muted text-uppercase mb-1">Status Pengisi</label>
+                            <select name="status_pengisi" class="form-select">
+                                <option value="Pemilik Usaha" {{ $data->status_pengisi == 'Pemilik Usaha' ? 'selected' : '' }}>Pemilik Usaha</option>
+                                <option value="Pendamping/RT" {{ $data->status_pengisi == 'Pendamping/RT' ? 'selected' : '' }}>Pendata / Ketua RT / Pendamping</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group mb-3">
                             <label class="fw-bold small text-muted text-uppercase mb-1">Nama Lengkap</label>
                             <input type="text" name="nama" class="form-control" value="{{ $data->nama }}" required>
                         </div>
@@ -72,112 +81,117 @@
                     <div class="row g-3 mb-5">
                         <div class="col-12">
                             <div class="form-group mb-3">
-                                <label class="fw-bold small text-muted text-uppercase mb-1">Kegiatan Utama Usaha</label>
+                                <label class="fw-bold small text-muted text-uppercase mb-1">Nama Usaha / Kegiatan Utama</label>
                                 <input type="text" name="kegiatan_utama" class="form-control" value="{{ $data->kegiatan_utama }}">
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group mb-3">
-                                <label class="fw-bold small text-muted text-uppercase mb-1">Jenis Usaha</label>
-                                <select name="jenis_usaha" class="form-select">
-                                    <option value="1" {{ $data->jenis_usaha == '1' ? 'selected' : '' }}>Produksi Barang Sendiri</option>
-                                    <option value="2" {{ $data->jenis_usaha == '2' ? 'selected' : '' }}>Perdagangan / Reseller</option>
-                                    <option value="3" {{ $data->jenis_usaha == '3' ? 'selected' : '' }}>Kuliner (Makan/Minum)</option>
-                                    <option value="4" {{ $data->jenis_usaha == '4' ? 'selected' : '' }}>Penyediaan Jasa Lainnya</option>
-                                </select>
+                                <label class="fw-bold small text-muted text-uppercase mb-1">Kategori Usaha</label>
+                                <input type="text" name="jenis_usaha" class="form-control" value="{{ $data->jenis_usaha }}" placeholder="Contoh: Kuliner, Jasa, dll">
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group mb-3">
-                                <label class="fw-bold small text-muted text-uppercase mb-1">Lokasi Usaha</label>
+                                <label class="fw-bold small text-muted text-uppercase mb-1">Jumlah Tenaga Kerja</label>
+                                <input type="text" name="jumlah_tk" class="form-control" value="{{ $data->jumlah_tk }}" placeholder="Contoh: 1-5 Orang">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label class="fw-bold small text-muted text-uppercase mb-1">Tahun Mulai Beroperasi</label>
+                                <input type="number" name="tahun_mulai" class="form-control" value="{{ $data->tahun_mulai }}" placeholder="Contoh: 2020">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label class="fw-bold small text-muted text-uppercase mb-1">Legalitas Usaha</label>
+                                <input type="text" name="legalitas" class="form-control" value="{{ $data->legalitas }}" placeholder="Contoh: NIB, IUMK, Tidak Ada">
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group mb-3">
+                                <label class="fw-bold small text-muted text-uppercase mb-1">Alamat Usaha (Fisik/Online)</label>
                                 <input type="text" name="alamat_usaha" class="form-control" value="{{ $data->alamat_usaha }}">
                             </div>
                         </div>
                         <div class="col-md-12">
                             <div class="form-group mb-3">
-                                <label class="fw-bold small text-muted text-uppercase mb-1">Estimasi Omset per Bulan (Rp)</label>
-                                <input type="number" name="omzet" class="form-control" value="{{ $data->omzet }}">
+                                <label class="fw-bold small text-muted text-uppercase mb-1">Estimasi Omset per Bulan</label>
+                                <input type="text" name="omzet" class="form-control" value="{{ $data->omzet }}">
                             </div>
                         </div>
                     </div>
 
-                    {{-- SECTION III: EKONOMI DIGITAL --}}
+                    {{-- SECTION III: AKTIVITAS DIGITAL --}}
                     <div class="section-title mb-4 bg-light p-3 border-start border-info border-5 rounded-end shadow-sm">
-                        <h5 class="mb-0 fw-bold text-dark">III. PENETRASI EKONOMI DIGITAL</h5>
+                        <h5 class="mb-0 fw-bold text-dark">III. AKTIVITAS DIGITAL</h5>
                     </div>
 
                     <div class="row g-3 mb-5">
                         <div class="col-md-6">
                             <div class="form-group mb-3">
-                                <label class="fw-bold small text-muted text-uppercase mb-1">Platform Digital (Pisahkan dengan koma)</label>
-                                <input type="text" name="platform_digital" class="form-control" value="{{ $data->platform_digital }}" placeholder="Contoh: Shopee, TikTok, Instagram">
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group mb-3">
-                                <label class="fw-bold small text-muted text-uppercase mb-1">Proporsi Transaksi Online</label>
-                                <select name="proporsi_pendapatan_digital" class="form-select">
-                                    <option value="0%" {{ $data->proporsi_pendapatan_digital == '0%' ? 'selected' : '' }}>0%</option>
-                                    <option value="1-25%" {{ $data->proporsi_pendapatan_digital == '1-25%' ? 'selected' : '' }}>1-25%</option>
-                                    <option value="26-50%" {{ $data->proporsi_pendapatan_digital == '26-50%' ? 'selected' : '' }}>26-50%</option>
-                                    <option value="51-75%" {{ $data->proporsi_pendapatan_digital == '51-75%' ? 'selected' : '' }}>51-75%</option>
-                                    <option value="76-100%" {{ $data->proporsi_pendapatan_digital == '76-100%' ? 'selected' : '' }}>76-100%</option>
+                                <label class="fw-bold small text-muted text-uppercase mb-1">Pemanfaatan Saluran Digital?</label>
+                                <select name="use_digital" id="use_digital" class="form-select border-info">
+                                    <option value="ya" {{ $data->use_digital == 'ya' ? 'selected' : '' }}>Ya, Menggunakan Digital</option>
+                                    <option value="tidak" {{ $data->use_digital == 'tidak' ? 'selected' : '' }}>Tidak (Offline Murni)</option>
                                 </select>
                             </div>
                         </div>
-                        <div class="col-md-6">
-                            <div class="form-group mb-3">
-                                <label class="fw-bold small text-muted text-uppercase mb-1">Metode Pembayaran Digital</label>
-                                <input type="text" name="metode_pembayaran_digital" class="form-control" value="{{ $data->metode_pembayaran_digital }}" placeholder="Contoh: QRIS, Transfer, OVO">
+                        <div id="digital_fields" class="row g-3 {{ $data->use_digital == 'tidak' ? 'd-none' : '' }}">
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label class="fw-bold small text-muted text-uppercase mb-1">Platform (Shopee, WA, FB, dll)</label>
+                                    <input type="text" name="platform_digital_v2" class="form-control" value="{{ $data->platform_digital_v2 }}">
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group mb-3">
-                                <label class="fw-bold small text-muted text-uppercase mb-1">Software Operasional</label>
-                                <input type="text" name="software_operasional" class="form-control" value="{{ $data->software_operasional }}" placeholder="Contoh: Moka POS, Zahir Accounting">
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label class="fw-bold small text-muted text-uppercase mb-1">Sumber Penghasilan Digital</label>
+                                    <input type="text" name="sumber_penghasilan_digital" class="form-control" value="{{ $data->sumber_penghasilan_digital }}">
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-12 mt-3">
-                            <div class="card border-info bg-light-info">
-                                <div class="card-body">
-                                    <label class="fw-bold mb-2">Produser Produk Digital?</label>
-                                    <div class="d-flex gap-4">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="radio" name="is_producer" value="1" id="radYa" {{ $data->is_producer ? 'checked' : '' }}>
-                                            <label class="form-check-label fw-bold" for="radYa">Ya, Pembuat Produk/Konten Digital</label>
-                                        </div>
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="radio" name="is_producer" value="0" id="radTidak" {{ !$data->is_producer ? 'checked' : '' }}>
-                                            <label class="form-check-label fw-bold" for="radTidak">Bukan Produser</label>
-                                        </div>
-                                    </div>
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label class="fw-bold small text-muted text-uppercase mb-1">Lama Beraktivitas Digital</label>
+                                    <input type="text" name="lama_aktivitas_digital" class="form-control" value="{{ $data->lama_aktivitas_digital }}">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label class="fw-bold small text-muted text-uppercase mb-1">Dampak Terhadap Omset</label>
+                                    <input type="text" name="tambah_penghasilan_digital" class="form-control" value="{{ $data->tambah_penghasilan_digital }}">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label class="fw-bold small text-muted text-uppercase mb-1">Metode Pembayaran Digital</label>
+                                    <input type="text" name="metode_pembayaran_digital" class="form-control" value="{{ $data->metode_pembayaran_digital }}">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label class="fw-bold small text-muted text-uppercase mb-1">Kendala Utama</label>
+                                    <input type="text" name="kendala" class="form-control" value="{{ $data->kendala }}">
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    {{-- SECTION IV: KOMUNITAS --}}
-                    <div class="section-title mb-4 bg-light p-3 border-start border-secondary border-5 rounded-end shadow-sm">
-                        <h5 class="mb-0 fw-bold text-dark">IV. ASPEK SOSIAL</h5>
+                    {{-- SECTION IV: FINALISASI & SENSUS --}}
+                    <div class="section-title mb-4 bg-light p-3 border-start border-success border-5 rounded-end shadow-sm">
+                        <h5 class="mb-0 fw-bold text-dark">IV. FINALISASI & SENSUS EKONOMI 2026</h5>
                     </div>
 
                     <div class="row g-3 mb-4">
-                        <div class="col-md-6">
+                        <div class="col-md-12">
                             <div class="form-group mb-3">
-                                <label class="fw-bold small text-muted text-uppercase mb-1">Ikut Komunitas?</label>
-                                <select name="ikut_komunitas" id="ikut_komunitas" class="form-select">
-                                    <option value="ya" {{ $data->ikut_komunitas == 'ya' ? 'selected' : '' }}>Ya</option>
-                                    <option value="tidak" {{ $data->ikut_komunitas == 'tidak' ? 'selected' : '' }}>Tidak</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-6 {{ $data->ikut_komunitas == 'tidak' ? 'd-none' : '' }}" id="komunitas_wrapper">
-                            <div class="form-group mb-3">
-                                <label class="fw-bold small text-muted text-uppercase mb-1">Nama Komunitas</label>
-                                <input type="text" name="nama_komunitas" class="form-control" value="{{ $data->nama_komunitas }}">
+                                <label class="fw-bold small text-muted text-uppercase mb-1">Pernah Dikunjungi Petugas SE2026?</label>
+                                <input type="text" name="se2026_visit" class="form-control" value="{{ $data->se2026_visit }}">
                             </div>
                         </div>
                     </div>
+                </div>
                 </div>
 
                 <div class="mt-5 border-top pt-4 text-end">
@@ -197,22 +211,14 @@ document.addEventListener("DOMContentLoaded", function() {
     const usahaSection = document.getElementById('usaha_section');
     
     usahaSelect.addEventListener('change', function() {
-        if(this.value === 'ya') {
-            usahaSection.classList.remove('d-none');
-        } else {
-            usahaSection.classList.add('d-none');
-        }
+        usahaSection.classList.toggle('d-none', this.value !== 'ya');
     });
 
-    const komunitasSelect = document.getElementById('ikut_komunitas');
-    const komunitasWrapper = document.getElementById('komunitas_wrapper');
+    const digitalSelect = document.getElementById('use_digital');
+    const digitalFields = document.getElementById('digital_fields');
     
-    komunitasSelect.addEventListener('change', function() {
-        if(this.value === 'ya') {
-            komunitasWrapper.classList.remove('d-none');
-        } else {
-            komunitasWrapper.classList.add('d-none');
-        }
+    digitalSelect.addEventListener('change', function() {
+        digitalFields.classList.toggle('d-none', this.value !== 'ya');
     });
 });
 </script>

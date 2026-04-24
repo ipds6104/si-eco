@@ -25,9 +25,9 @@ class RedirectIfAuthenticated
                 // Arahkan sesuai role
                 switch ($user->id_role) {
                     case 1:
-                        return redirect()->route('welcome.page');
+                        return redirect()->route('welcome');
                     case 2:
-                        return redirect()->route('welcome.page');
+                        return redirect()->route('welcome');
                     case 3:
                         return redirect()->route('dashboard');
                     default:

@@ -14,6 +14,11 @@ class RoleSeeder extends Seeder
      */
     public function run(): void
     {
+        // Bersihkan tabel role agar tidak duplikat saat dijalankan ulang
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        DB::table('role')->truncate();
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+
         $filePath = database_path('seeders/data/role.csv');
 
         if (!File::exists($filePath)) {

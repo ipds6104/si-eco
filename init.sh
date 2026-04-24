@@ -43,6 +43,12 @@ if grep -q "USE_LOCAL_DB=true" .env; then
         echo -e "${YELLOW}Updating DB_PASSWORD to 'root' in .env...${NC}"
         sed -i 's/DB_PASSWORD=.*/DB_PASSWORD=root/' .env
     fi
+
+    # Auto-update APP_URL to 127.0.0.1 if it's localhost
+    if grep -q "APP_URL=http://localhost" .env; then
+        echo -e "${YELLOW}Updating APP_URL to 127.0.0.1 in .env...${NC}"
+        sed -i 's|APP_URL=http://localhost|APP_URL=http://127.0.0.1|' .env
+    fi
 fi
 
 # 1b. Restarting Containers for Safety
@@ -112,6 +118,10 @@ else
     docker compose exec app php artisan migrate --no-interaction
 fi
 
+# 7b. Storage Link (idempotent)
+echo -e "${YELLOW}Ensuring storage symlink exists...${NC}"
+docker compose exec app php artisan storage:link --no-interaction 2>/dev/null || true
+
 # 8. Frontend Assets (Smarter)
 if [ ! -d "node_modules" ] || [ "$FRESH" = true ]; then
     echo -e "${YELLOW}Installing frontend dependencies...${NC}"
@@ -129,9 +139,9 @@ fi
 echo -e ""
 echo -e "${GREEN}Setup Complete!${NC}"
 echo -e "----------------------------------------"
-echo -e "${CYAN}App URL:    http://localhost:8100${NC}"
-echo -e "${CYAN}Mail UI:   http://localhost:8180${NC}"
-echo -e "${CYAN}MySQL Host: host.docker.internal${NC}"
+echo -e "${CYAN}App URL:    http://127.0.0.1:8100${NC}"
+echo -e "${CYAN}Mail UI:   http://127.0.0.1:8180${NC}"
+echo -e "${CYAN}MySQL Host: 127.0.0.1${NC}"
 echo -e "----------------------------------------"
 echo -e "To reset everything, run: ./init.sh --fresh"
 echo -e "To see logs, run: docker compose logs -f app"

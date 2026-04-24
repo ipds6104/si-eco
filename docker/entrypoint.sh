@@ -19,6 +19,10 @@ if [ "$APP_ENV" = "production" ]; then
     php /app/artisan optimize 2>&1 || echo "⚠️  Optimize failed, skipping..."
     php /app/artisan view:cache 2>&1 || echo "⚠️  View cache failed, skipping..."
 
+    # Create storage symlink (idempotent)
+    echo "Ensuring storage symlink exists..."
+    php /app/artisan storage:link --no-interaction 2>&1 || echo "⚠️  Storage link failed, skipping..."
+
     echo "✅ Entrypoint setup complete. Starting application..."
 fi
 

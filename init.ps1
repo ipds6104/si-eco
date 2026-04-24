@@ -91,9 +91,9 @@ if ($Fresh) {
 Write-Host ""
 Write-Host "Setup Complete!" -ForegroundColor Green
 Write-Host "----------------------------------------"
-Write-Host "App URL:    http://localhost:8100" -ForegroundColor Cyan
-Write-Host "Mail UI:   http://localhost:8180" -ForegroundColor Cyan
-Write-Host "MySQL Host: host.docker.internal" -ForegroundColor Cyan
+Write-Host "App URL:    http://127.0.0.1:8100" -ForegroundColor Cyan
+Write-Host "Mail UI:   http://127.0.0.1:8180" -ForegroundColor Cyan
+Write-Host "MySQL Host: 127.0.0.1" -ForegroundColor Cyan
 Write-Host "----------------------------------------"
 Write-Host "To reset everything, run: .\init.ps1 -Fresh"
 Write-Host "To see logs, run: docker compose logs -f app"

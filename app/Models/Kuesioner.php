@@ -12,12 +12,14 @@ class Kuesioner extends Model
     protected $table = 'kuesioners';
 
     protected $fillable = [
+        'status_pengisi',
         'nama',
         'nik',
         'no_hp',
         'kabupaten_id',
         'kecamatan_id',
         'desa_id',
+        'sls_id',
         'fakultas',
         'kategori_responden',
         'pekerjaan',
@@ -52,10 +54,18 @@ class Kuesioner extends Model
         'foto_rumah',
         'lama_aktivitas_digital',
         'tambah_penghasilan_digital',
+        'accuracy',
+        'jumlah_tk',
+        'tahun_mulai',
+        'legalitas',
+        'kendala',
+        'se2026_visit',
+        'use_digital',
     ];
 
     public function kabupaten() { return $this->belongsTo(Region::class, 'kabupaten_id'); }
     public function kecamatan() { return $this->belongsTo(Region::class, 'kecamatan_id'); }
     public function desa() { return $this->belongsTo(Region::class, 'desa_id'); }
+    public function sls() { return $this->belongsTo(Region::class, 'sls_id'); }
 
 }

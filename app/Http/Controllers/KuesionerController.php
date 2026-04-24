@@ -40,13 +40,19 @@ class KuesionerController extends Controller
             'platform_digital_v2', 
             'metode_pembayaran_digital', 
             'software_operasional', 
-            'sumber_penghasilan_digital'
+            'sumber_penghasilan_digital',
+            'kendala'
         ];
         
         foreach ($arrayFields as $field) {
             if ($request->has($field)) {
                 $data[$field] = collect($request->$field)->implode(', ');
             }
+        }
+
+        // Handle Kendala Lainnya (if 'Lainnya' is selected in checkboxes)
+        if ($request->filled('kendala_lainnya') && $request->has('kendala') && in_array('Lainnya', (array)$request->kendala)) {
+            $data['kendala'] = str_replace('Lainnya', 'Lainnya: ' . $request->kendala_lainnya, $data['kendala']);
         }
 
         // Add default values for fields removed from the form but required by DB
@@ -74,11 +80,23 @@ class KuesionerController extends Controller
         $updateData = $request->all();
 
         // Checkbox fields (Arrays)
-        $arrayFields = ['media_komunitas', 'platform_digital', 'metode_pembayaran_digital', 'software_operasional'];
+        $arrayFields = [
+            'media_komunitas', 
+            'platform_digital', 
+            'platform_digital_v2', 
+            'metode_pembayaran_digital', 
+            'software_operasional', 
+            'sumber_penghasilan_digital',
+            'kendala'
+        ];
         foreach ($arrayFields as $field) {
             if ($request->has($field)) {
                 $updateData[$field] = collect($request->$field)->implode(', ');
             }
+        }
+        // Handle Kendala Lainnya (if 'Lainnya' is selected in checkboxes)
+        if ($request->filled('kendala_lainnya') && $request->has('kendala') && in_array('Lainnya', (array)$request->kendala)) {
+            $updateData['kendala'] = str_replace('Lainnya', 'Lainnya: ' . $request->kendala_lainnya, $updateData['kendala']);
         }
 
         $data->update($updateData);
@@ -124,7 +142,7 @@ class KuesionerController extends Controller
         $columns = \Schema::getColumnListing('kuesioners');
 
         $headers = [
-            "Content-type" => "text/csv",
+            "Content-type"        => "text/csv",
             "Content-Disposition" => "attachment; filename=$fileName",
         ];
 
@@ -140,11 +158,15 @@ class KuesionerController extends Controller
                 $line = [];
 
                 foreach ($columns as $column) {
-                    $line[] = $row->$column;
+                    // Konversi foto_rumah menjadi URL publik lengkap
+                    if ($column === 'foto_rumah' && !empty($row->$column)) {
+                        $line[] = url('storage/' . $row->$column);
+                    } else {
+                        $line[] = $row->$column;
+                    }
                 }
 
                 fputcsv($file, $line);
-
             }
 
             fclose($file);
@@ -163,31 +185,4 @@ class KuesionerController extends Controller
             ->with('success','Data berhasil dihapus');
     }
 
-    public function dashboard()
-    {
-        $total = Kuesioner::count();
-        $punyaUsaha = Kuesioner::where('punya_usaha', 'ya')->count();
-        $tidakUsaha = Kuesioner::where('punya_usaha', 'tidak')->count();
-        $ikutKomunitas = Kuesioner::where('ikut_komunitas', 'ya')->count();
-        $isProducer = Kuesioner::where('is_producer', 1)->count();
-
-        $jenis1 = Kuesioner::where('jenis_usaha', '1')->count();
-        $jenis2 = Kuesioner::where('jenis_usaha', '2')->count();
-        $jenis3 = Kuesioner::where('jenis_usaha', '3')->count();
-        $jenis4 = Kuesioner::where('jenis_usaha', '4')->count();
-
-        return view('dashboard', compact(
-            'total',
-            'punyaUsaha',
-            'tidakUsaha',
-            'ikutKomunitas',
-            'isProducer',
-            'jenis1',
-            'jenis2',
-            'jenis3',
-            'jenis4'
-        ));
-    }
-    
-    
 }

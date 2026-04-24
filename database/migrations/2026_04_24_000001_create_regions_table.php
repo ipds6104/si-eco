@@ -11,7 +11,7 @@ return new class extends Migration
         Schema::create('regions', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->enum('type', ['KABUPATEN', 'KECAMATAN', 'DESA']);
+            $table->enum('type', ['KABUPATEN', 'KECAMATAN', 'DESA', 'SLS']);
             $table->unsignedBigInteger('parent_id')->nullable();
             $table->string('code')->nullable();
             $table->timestamps();
