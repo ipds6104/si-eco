@@ -7,7 +7,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <title>{{ config('app.name', 'CAIKUE') }}</title>
-    <link rel="icon" href="{{ asset('/assets/img/logo.png') }}" type="image/x-icon" />
+    <link rel="icon" href="{{ asset('/assets/img/logo.webp') }}" type="image/x-icon" />
 
     <link rel="stylesheet" href="{{ asset('assets/css/fonts.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/bootstrap.min.css') }}">
