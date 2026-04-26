@@ -3,6 +3,7 @@
 # CAIKUE (SI-ECO) Project Smart Setup Script for Linux
 PROJECT_NAME="CAIKUE"
 FRESH=false
+WATCH_MODE=false
 
 # Colors for output
 CYAN='\033[0;36m'
@@ -16,9 +17,15 @@ for arg in "$@"; do
     if [ "$arg" == "--fresh" ] || [ "$arg" == "-f" ]; then
         FRESH=true
     fi
+    if [ "$arg" == "--watch" ] || [ "$arg" == "-w" ]; then
+        WATCH_MODE=true
+    fi
 done
 
-echo -e "${CYAN}Initialing $PROJECT_NAME Development Environment (Linux Version)...${NC}"
+# Compose Files
+COMPOSE_BASE="-f docker-compose.yml -f docker-compose.dev.yml"
+
+echo -e "${CYAN}Initializing $PROJECT_NAME Development Environment...${NC}"
 
 # 1. Environment File Check
 if [ ! -f ".env" ]; then
@@ -52,88 +59,87 @@ if grep -q "USE_LOCAL_DB=true" .env; then
 fi
 
 # 1b. Restarting Containers for Safety
-echo -e "${YELLOW}Restarting containers to ensure clean state...${NC}"
-docker compose $PROFILE_FLAG down --remove-orphans
+echo -e "${YELLOW}Restarting containers...${NC}"
+docker compose $COMPOSE_BASE $PROFILE_FLAG down --remove-orphans
 
-# 2. Start/Check Docker Containers
-if [ "$FRESH" = true ]; then
-    echo -e "${YELLOW}Force-rebuilding Docker containers...${NC}"
-    docker compose $PROFILE_FLAG up -d --build --remove-orphans
+# 2. Start Docker Containers
+if [ "$WATCH_MODE" = true ]; then
+    echo -e "${YELLOW}Starting in WATCH (Hot Reload) mode...${NC}"
+    WATCH=true docker compose $COMPOSE_BASE $PROFILE_FLAG up -d
 else
-    echo -e "${YELLOW}Ensuring Docker containers are running...${NC}"
-    docker compose $PROFILE_FLAG up -d
+    if [ "$FRESH" = true ]; then
+        echo -e "${YELLOW}Force-rebuilding Docker containers...${NC}"
+        docker compose $COMPOSE_BASE $PROFILE_FLAG up -d --build --remove-orphans
+    else
+        echo -e "${YELLOW}Ensuring Docker containers are running...${NC}"
+        docker compose $COMPOSE_BASE $PROFILE_FLAG up -d
+    fi
 fi
 
 if [ $? -ne 0 ]; then
-    echo -e "${RED}Failed to start Docker containers. Ensure Docker is running.${NC}"
+    echo -e "${RED}Failed to start Docker containers.${NC}"
     exit 1
 fi
 
-# 3. Wait briefly for services
+# 3. Wait for services
 echo -e "${YELLOW}Waiting for services to stabilize...${NC}"
 sleep 5
 
-# 4. Dependency Management (PHP)
+# 4. PHP Dependencies
 if [ "$FRESH" = true ] || [ ! -d "vendor" ]; then
     echo -e "${YELLOW}Installing PHP dependencies...${NC}"
-    docker compose exec app composer install
+    docker compose $COMPOSE_BASE exec app composer install
 else
-    echo -e "${GREEN}PHP dependencies already installed. Skipping...${NC}"
+    echo -e "${GREEN}PHP dependencies already installed.${NC}"
 fi
 
-# 5. Laravel Setup (Conditional)
+# 5. Laravel Setup
 if [ "$FRESH" = true ] || ! grep -q "APP_KEY=base64:" .env; then
     echo -e "${YELLOW}Generating Application Key...${NC}"
-    docker compose exec app php artisan key:generate --ansi
-else
-    echo -e "${GREEN}Application Key already exists. Skipping...${NC}"
+    docker compose $COMPOSE_BASE exec app php artisan key:generate --ansi
 fi
 
-# 6. Octane Checklist
+# 6. Octane Setup
 if [ "$FRESH" = true ] || [ ! -f "config/octane.php" ]; then
     echo -e "${YELLOW}Setting up Laravel Octane...${NC}"
-    docker compose exec app php artisan octane:install --server=frankenphp --no-interaction
+    docker compose $COMPOSE_BASE exec app php artisan octane:install --server=frankenphp --no-interaction
 fi
 
-# 7. Database Migrations (Smart)
+# 7. Database Migrations
 if [ "$PROFILE_FLAG" != "" ]; then
-    echo -e "${YELLOW}Waiting for MySQL to be ready...${NC}"
+    echo -e "${YELLOW}Waiting for MySQL...${NC}"
     MAX_RETRIES=30
     COUNT=0
-    while ! docker compose exec db mysqladmin ping -h"localhost" -u"root" -p"${DB_PASSWORD:-root}" --silent; do
+    while ! docker compose $COMPOSE_BASE exec db mysqladmin ping -h"localhost" -u"root" -p"root" --silent; do
         sleep 2
         COUNT=$((COUNT + 1))
-        if [ $COUNT -ge $MAX_RETRIES ]; then
-            echo -e "${RED}MySQL failed to start in time. Skipping migrations.${NC}"
-            break
-        fi
+        if [ $COUNT -ge $MAX_RETRIES ]; then break; fi
     done
 fi
 
 if [ "$FRESH" = true ]; then
-    echo -e "${RED}Fresh migration and seeding (Destructive)...${NC}"
-    docker compose exec app php artisan migrate:fresh --seed --no-interaction
+    echo -e "${RED}Fresh migration and seeding...${NC}"
+    docker compose $COMPOSE_BASE exec app php artisan migrate:fresh --seed --no-interaction
 else
-    echo -e "${YELLOW}Running incremental migrations (Safe)...${NC}"
-    docker compose exec app php artisan migrate --no-interaction
+    echo -e "${YELLOW}Running migrations...${NC}"
+    docker compose $COMPOSE_BASE exec app php artisan migrate --no-interaction
 fi
 
-# 7b. Storage Link (idempotent)
-echo -e "${YELLOW}Ensuring storage symlink exists...${NC}"
-docker compose exec app php artisan storage:link --no-interaction 2>/dev/null || true
+# 7b. Storage Link
+docker compose $COMPOSE_BASE exec app php artisan storage:link --no-interaction 2>/dev/null || true
 
-# 8. Frontend Assets (Smarter)
+# 8. Frontend Assets
 if [ ! -d "node_modules" ] || [ "$FRESH" = true ]; then
     echo -e "${YELLOW}Installing frontend dependencies...${NC}"
-    docker compose exec app npm install
-elif [ "$PROFILE_FLAG" != "" ] && [ ! -d "node_modules/chokidar" ]; then
-    echo -e "${YELLOW}Chokidar missing for Octane watch. Installing...${NC}"
-    docker compose exec app npm install chokidar
+    docker compose $COMPOSE_BASE exec app npm install
+elif [ "$WATCH_MODE" = true ] && [ ! -d "node_modules/chokidar" ]; then
+    echo -e "${YELLOW}Installing chokidar for watch mode...${NC}"
+    docker compose $COMPOSE_BASE exec app npm install chokidar
 fi
 
 if [ "$FRESH" = true ]; then
-    echo -e "${YELLOW}Building assets for production...${NC}"
-    docker compose exec app npm run build
+    echo -e "${YELLOW}Building assets...${NC}"
+    docker compose $COMPOSE_BASE exec app npm run build
 fi
 
 echo -e ""
@@ -141,7 +147,12 @@ echo -e "${GREEN}Setup Complete!${NC}"
 echo -e "----------------------------------------"
 echo -e "${CYAN}App URL:    http://127.0.0.1:8100${NC}"
 echo -e "${CYAN}Mail UI:   http://127.0.0.1:8180${NC}"
-echo -e "${CYAN}MySQL Host: 127.0.0.1${NC}"
 echo -e "----------------------------------------"
-echo -e "To reset everything, run: ./init.sh --fresh"
-echo -e "To see logs, run: docker compose logs -f app"
+echo -e "To reset: ./init.sh --fresh"
+echo -e "To watch: ./init.sh --watch"
+
+if [ "$WATCH_MODE" = true ]; then
+    echo -e ""
+    echo -e "${YELLOW}Attaching logs for Hot Reload (Ctrl+C to stop)...${NC}"
+    docker compose $COMPOSE_BASE logs -f app
+fi

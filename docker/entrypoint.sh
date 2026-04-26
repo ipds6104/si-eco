@@ -28,5 +28,20 @@ if [ "$APP_ENV" = "production" ]; then
     echo "✅ Entrypoint setup complete. Starting application..."
 fi
 
+# 2. Development / Watch Mode Override
+if [ "$WATCH" = "true" ]; then
+    echo "🛠️  Starting in WATCH mode (Development)..."
+    
+    # Start Vite in background for asset hot reloading
+    if [ -f "package.json" ]; then
+        echo "Starting Vite (npm run dev)..."
+        npm run dev -- --host 0.0.0.0 &
+    fi
+
+    # Start Octane with --watch
+    echo "Starting Octane with --watch..."
+    exec php artisan octane:start --server=frankenphp --host=0.0.0.0 --port=80 --admin-port=2019 --watch
+fi
+
 # Execute CMD (Octane start) — INI HARUS SELALU TERCAPAI
 exec "$@"

@@ -160,7 +160,7 @@
             <div class="col-12">
                 <div class="description-box">
                     <p class="lead mb-0">
-                        <strong>CAIKUE</strong> merupakan akronim dari <strong>C</strong>atatan <strong>I</strong>ndustri dan <strong>Kue</strong>sioner <strong>E</strong>konomi Digital yang merupakan alat untuk mengumpulkan data profil industri digital secara umum, guna memetakan <span class="fw-bold" style="color: #fe990b;">pelaku usaha ekonomi</span> digital secara komprehensif.
+                        <strong>CAIKUE</strong> merupakan akronim dari <strong>C</strong>atatan <strong>I</strong>ndustri dan <strong>Kue</strong>sioner <strong>E</strong>konomi Digital yang merupakan alat untuk <strong>Identifikasi dan Pemetaan</strong> profil industri digital, guna menjaring pelaku usaha ekonomi digital yang belum terdata secara komprehensif.
                     </p>
                 </div>
             </div>
@@ -190,9 +190,13 @@
                         Mulai Isi Kuesioner
                     </h5>
 
-                    <p style="font-size:14px; opacity:0.9;">
+                    <p style="font-size:14px; opacity:0.9;" class="mb-3">
                         Klik untuk mengisi data responden
                     </p>
+
+                    <div class="badge bg-white text-dark rounded-pill px-3 py-2 shadow-sm" style="font-size: 12px; font-weight: bold;">
+                        <i class="far fa-clock text-warning me-1"></i> Hanya ± 3 Menit
+                    </div>
 
                 </div>
 

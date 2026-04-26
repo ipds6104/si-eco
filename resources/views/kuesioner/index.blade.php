@@ -1,21 +1,207 @@
 @extends('layouts.app')
 
+@section('stylecss')
+<style>
+    /* Modern Radio & Checkbox Cards */
+    .card-input-group {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .card-input {
+        position: relative;
+        display: block;
+        cursor: pointer;
+        margin-bottom: 0;
+    }
+
+    .card-input input {
+        position: absolute;
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+
+    .card-input-content {
+        display: flex;
+        align-items: center;
+        padding: 14px 18px;
+        background: #ffffff;
+        border: 2px solid #e2e8f0;
+        border-radius: 12px;
+        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        min-height: 64px;
+    }
+
+    .card-input:hover .card-input-content {
+        border-color: #fbad6d;
+        background: #fffaf5;
+        transform: translateY(-1px);
+    }
+
+    .card-input input:checked + .card-input-content {
+        border-color: #f79039;
+        background: #fff7ef;
+        box-shadow: 0 4px 15px rgba(247, 144, 57, 0.12);
+    }
+
+    /* Radio Indicator */
+    .card-input-radio-icon {
+        width: 22px;
+        height: 22px;
+        border: 2px solid #cbd5e0;
+        border-radius: 50%;
+        margin-right: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        transition: all 0.2s ease;
+        background: #fff;
+    }
+
+    .card-input input:checked + .card-input-content .card-input-radio-icon {
+        border-color: #f79039;
+        background: #f79039;
+    }
+
+    .card-input-radio-icon::after {
+        content: '';
+        width: 8px;
+        height: 8px;
+        background: #fff;
+        border-radius: 50%;
+        transform: scale(0);
+        transition: transform 0.2s ease;
+    }
+
+    .card-input input:checked + .card-input-content .card-input-radio-icon::after {
+        transform: scale(1);
+    }
+
+    /* Checkbox Indicator */
+    .card-input-check-icon {
+        width: 22px;
+        height: 22px;
+        border: 2px solid #cbd5e0;
+        border-radius: 6px;
+        margin-right: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        transition: all 0.2s ease;
+        background: #fff;
+    }
+
+    .card-input input:checked + .card-input-content .card-input-check-icon {
+        border-color: #f79039;
+        background: #f79039;
+    }
+
+    .card-input-check-icon::after {
+        content: '\f00c';
+        font-family: 'Font Awesome 5 Solid';
+        font-size: 11px;
+        color: #fff;
+        display: none;
+    }
+
+    .card-input input:checked + .card-input-content .card-input-check-icon::after {
+        display: block;
+    }
+
+    .card-input-label {
+        font-size: 0.95rem;
+        font-weight: 500;
+        color: #4a5568;
+        line-height: 1.4;
+    }
+
+    .card-input input:checked + .card-input-content .card-input-label {
+        color: #1a202c;
+        font-weight: 600;
+    }
+
+    @media (min-width: 768px) {
+        .card-input-group.grid-layout {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+        .card-input-group.grid-layout .card-input {
+            margin-bottom: 0;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .card-input-content {
+            padding: 12px 15px;
+        }
+        .card-input-label {
+            font-size: 0.9rem;
+        }
+    }
+</style>
+@endsection
+
 @section('content')
 
-<div class="container" style="margin-top:90px; margin-bottom: 50px;">
+<div class="container mt-4 mt-md-5 mb-5">
     <div class="row justify-content-center">
         <div class="col-lg-9">
             
             @if(session('success'))
-                <div class="card shadow-lg border-0 rounded-4 animate__animated animate__fadeIn">
+                <div class="card shadow-lg border-0 rounded-4 animate__animated animate__zoomIn">
                     <div class="card-body p-5 text-center">
-                        <div class="display-1 text-success mb-4"><i class="fas fa-check-circle"></i></div>
-                        <h2 class="fw-bold text-dark">Terima Kasih!</h2>
-                        <p class="lead text-muted">{{ session('success') }}</p>
+                        <div class="mb-4">
+                            <i class="fas fa-check-circle text-success" style="font-size: 80px;"></i>
+                        </div>
+                        <h2 class="fw-bold text-dark">Data Berhasil Terkirim!</h2>
+                        <p class="lead text-muted mb-4">Kontribusi Anda sangat berarti dalam membantu <strong>BPS Kabupaten Mempawah</strong> memetakan potensi ekonomi digital yang lebih akurat.</p>
+                        
+                        <div class="bg-light p-4 rounded-4 mb-4 text-start border-start border-warning border-4">
+                            <h6 class="fw-bold text-dark"><i class="fas fa-shield-alt me-2 text-warning"></i>Apa selanjutnya?</h6>
+                            <p class="small text-muted mb-0">Data Anda akan diolah secara anonim untuk keperluan statistik nasional. Identitas pribadi Anda dilindungi sepenuhnya dan tidak akan dipublikasikan.</p>
+                        </div>
+
+                        <div class="mb-5">
+                            <p class="fw-bold text-dark small text-uppercase mb-3">Bantu sesama pelaku usaha agar terdata:</p>
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+                                <a href="https://wa.me/?text=Halo!%20Ayo%20bantu%20BPS%20Kabupaten%20Mempawah%20memetakan%20ekonomi%20digital%20kita.%20Cukup%203%20menit%20isi%20kuesionernya%20di%20sini:%20{{ urlencode(url()->current()) }}" target="_blank" class="btn btn-success px-4 rounded-pill shadow-sm">
+                                    <i class="fab fa-whatsapp me-2"></i> Bagikan ke WhatsApp
+                                </a>
+                                <button type="button" onclick="copyToClipboard()" class="btn btn-outline-secondary px-4 rounded-pill">
+                                    <i class="fas fa-copy me-2"></i> Salin Link
+                                </button>
+                            </div>
+                        </div>
+
                         <hr class="my-4">
-                        <a href="{{ route('welcome') }}" class="btn btn-warning btn-lg px-5 text-white fw-bold shadow-sm">Kembali ke Beranda</a>
+                        <a href="{{ route('welcome') }}" class="btn btn-warning btn-lg px-5 text-white fw-bold shadow-sm rounded-pill">Kembali ke Beranda</a>
                     </div>
                 </div>
+
+                <script>
+                function copyToClipboard() {
+                    const el = document.createElement('textarea');
+                    el.value = "{{ url()->current() }}";
+                    document.body.appendChild(el);
+                    el.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(el);
+                    
+                    Swal.fire({
+                        title: 'Tersalin!',
+                        text: 'Link kuesioner berhasil disalin ke clipboard.',
+                        icon: 'success',
+                        timer: 2000,
+                        showConfirmButton: false
+                    });
+                }
+                </script>
             @else
             <div class="card shadow-lg border-0 rounded-4">
                 <div class="card-header text-white py-3" style="background: linear-gradient(135deg, #f79039 0%, #fbad6d 100%);">
@@ -25,7 +211,7 @@
                         </div>
                         <div>
                             <h4 class="mb-0 fw-bold text-uppercase tracking-wider">Identifikasi Ekonomi Digital</h4>
-                            <small class="opacity-75">Formulir Pendataan Pelaku Usaha & Potensi Digital</small>
+                            <small class="opacity-75">BPS Kabupaten Mempawah</small>
                         </div>
                     </div>
                 </div>
@@ -38,9 +224,12 @@
                     <div id="step-pengantar" class="animate__animated animate__fadeIn">
                         <div class="text-center mb-4">
                             <img src="{{ asset('assets/img/logo.webp') }}" alt="Logo BPS" style="height: 60px; margin-bottom: 20px;">
-                            <h3 class="fw-bold text-dark mb-1">KUESIONER CAIKUE</h3>
-                            <p class="text-muted"><em>Survei Identifikasi Kegiatan Ekonomi Digital</em></p>
-                            <div class="badge bg-light text-dark border p-2">BPS Kabupaten Mempawah • Sensus Ekonomi 2026</div>
+                            <h2 class="fw-bold text-dark mb-1">KUESIONER CAIKUE</h2>
+                            <p class="text-muted lead">Identifikasi dan Pemetaan Pelaku Usaha & Potensi Ekonomi Digital</p>
+                            <div class="d-flex justify-content-center gap-2">
+                                <div class="badge bg-light text-dark border p-2">Sensus Ekonomi 2026 • Kabupaten Mempawah</div>
+                                <div class="badge bg-warning text-white border-0 p-2 shadow-sm"><i class="far fa-clock me-1"></i> Cukup 3 Menit</div>
+                            </div>
                         </div>
 
                         <div class="alert alert-info border-0 shadow-sm mb-4">
@@ -52,26 +241,42 @@
                                 <h5 class="fw-bold text-dark mb-3">BAGIAN 0: SKRINING AWAL</h5>
                                 
                                 <div class="mb-4">
-                                    <label class="fw-bold text-dark mb-2">S1. Apakah Anda atau anggota rumah tangga Anda saat ini memiliki usaha atau kegiatan yang menghasilkan pendapatan, baik secara online maupun offline? *</label>
-                                    <div class="form-check mb-2">
-                                        <input class="form-check-input" type="radio" name="punya_usaha" id="skriningYa" value="ya">
-                                        <label class="form-check-label" for="skriningYa">Ya — saya memiliki atau terlibat dalam usaha yang menghasilkan pendapatan</label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="punya_usaha" id="skriningTidak" value="tidak">
-                                        <label class="form-check-label" for="skriningTidak">Tidak — tidak ada kegiatan usaha apapun</label>
+                                    <label class="fw-bold text-dark mb-3">S1. Apakah Anda atau anggota rumah tangga Anda saat ini memiliki usaha atau kegiatan yang menghasilkan pendapatan, baik secara online maupun offline? <span class="text-danger">*</span></label>
+                                    <div class="card-input-group">
+                                        <label class="card-input">
+                                            <input type="radio" name="punya_usaha" id="skriningYa" value="ya">
+                                            <div class="card-input-content">
+                                                <div class="card-input-radio-icon"></div>
+                                                <div class="card-input-label">Ya — saya memiliki atau terlibat dalam usaha yang menghasilkan pendapatan</div>
+                                            </div>
+                                        </label>
+                                        <label class="card-input">
+                                            <input type="radio" name="punya_usaha" id="skriningTidak" value="tidak">
+                                            <div class="card-input-content">
+                                                <div class="card-input-radio-icon"></div>
+                                                <div class="card-input-label">Tidak — tidak ada kegiatan usaha apapun</div>
+                                            </div>
+                                        </label>
                                     </div>
                                 </div>
 
                                 <div class="mb-3 d-none" id="skrining_pengisi_wrapper">
-                                    <label class="fw-bold text-dark mb-2">S2. Siapa yang mengisi formulir ini? *</label>
-                                    <div class="form-check mb-2">
-                                        <input class="form-check-input" type="radio" name="status_pengisi" id="statusPemilik" value="Pemilik Usaha" checked>
-                                        <label class="form-check-label" for="statusPemilik">Pemilik / pelaku usaha langsung</label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="status_pengisi" id="statusPendamping" value="Pendamping/RT">
-                                        <label class="form-check-label" for="statusPendamping">Petugas pendataan / Ketua RT / Pendamping (atas nama pemilik usaha)</label>
+                                    <label class="fw-bold text-dark mb-3">S2. Siapa yang mengisi formulir ini? <span class="text-danger">*</span></label>
+                                    <div class="card-input-group">
+                                        <label class="card-input">
+                                            <input type="radio" name="status_pengisi" id="statusPemilikSkrining" value="Pemilik Usaha" checked>
+                                            <div class="card-input-content">
+                                                <div class="card-input-radio-icon"></div>
+                                                <div class="card-input-label">Pemilik / pelaku usaha langsung</div>
+                                            </div>
+                                        </label>
+                                        <label class="card-input">
+                                            <input type="radio" name="status_pengisi" id="statusPendampingSkrining" value="Pendamping/RT">
+                                            <div class="card-input-content">
+                                                <div class="card-input-radio-icon"></div>
+                                                <div class="card-input-label">Petugas pendataan / Ketua RT / Pendamping</div>
+                                            </div>
+                                        </label>
                                     </div>
                                 </div>
                             </div>
@@ -108,12 +313,13 @@
                         </div>
 
                         <!-- PROGRESS BAR -->
+                        <div class="d-flex justify-content-between align-items-end mb-2">
+                            <small class="text-muted fw-bold text-uppercase" style="font-size: 10px;">Progress Pengisian</small>
+                            <small class="text-warning fw-bold" style="font-size: 10px;"><i class="far fa-clock me-1"></i> Estimasi Selesai: 3 Menit</small>
+                        </div>
                         <div class="progress mb-5" style="height: 6px; border-radius: 10px;">
                             <div id="progressBar" class="progress-bar bg-warning" role="progressbar" style="width: 25%; transition: width 0.4s ease;"></div>
                         </div>
-
-                        <form method="POST" action="{{ route('kues.store') }}" id="formKuesioner" enctype="multipart/form-data">
-                            @csrf
 
                         <!-- STEP 1: INFORMASI RESPONDEN -->
                         <div class="step-content">
@@ -122,42 +328,28 @@
                             </div>
                             
                             <div class="row g-3">
-                                <div class="col-md-12 mb-2">
-                                    <label class="fw-bold text-muted small text-uppercase">Status Pengisi Form</label>
-                                    <div class="d-flex gap-3 mt-1">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="radio" name="status_pengisi" id="statusPemilik" value="Pemilik Usaha" checked>
-                                            <label class="form-check-label" for="statusPemilik">Saya Pemilik Usaha</label>
-                                        </div>
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="radio" name="status_pengisi" id="statusPendamping" value="Pendamping/RT">
-                                            <label class="form-check-label" for="statusPendamping">Saya Pendata / Ketua RT / Pendamping</label>
-                                        </div>
-                                    </div>
-                                </div>
-
                                 <div class="col-md-12">
                                     <div class="form-floating mb-3">
                                         <input type="text" name="nama" class="form-control" id="nama" placeholder="Nama Pemilik Usaha" required>
-                                        <label for="nama">1. Nama Pemilik / Pelaku Usaha *</label>
+                                        <label for="nama">1. Nama Pemilik / Pelaku Usaha <span class="text-danger">*</span></label>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-floating mb-3">
                                         <input type="text" name="nik" id="nik" class="form-control" placeholder="NIK" maxlength="16" required>
-                                        <label for="nik">2. NIK (16 Digit) *</label>
+                                        <label for="nik">2. NIK (16 Digit) <span class="text-danger">*</span></label>
                                         <div class="form-text small text-muted"><i class="fas fa-shield-alt me-1"></i> NIK dijamin kerahasiaannya dan hanya digunakan untuk deduplikasi data statistik Sensus Ekonomi 2026.</div>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-floating mb-3">
                                         <input type="tel" name="no_hp" id="no_hp" class="form-control" placeholder="No HP" required>
-                                        <label for="no_hp">3. Nomor HP / WhatsApp aktif *</label>
+                                        <label for="no_hp">3. Nomor HP / WhatsApp aktif <span class="text-danger">*</span></label>
                                     </div>
                                 </div>
 
                                 <!-- WILAYAH -->
-                                <div class="col-12"><label class="fw-bold text-muted small text-uppercase">4. Wilayah Domisili Usaha *</label></div>
+                                <div class="col-12"><label class="fw-bold text-muted small text-uppercase">4. Wilayah Domisili Usaha <span class="text-danger">*</span></label></div>
                                 <div class="col-md-3">
                                     <div class="form-floating mb-3">
                                         <select id="kabupaten_id" name="kabupaten_id" class="form-select" required>
@@ -205,7 +397,7 @@
                                             <option value="Pelajar / Mahasiswa">Pelajar / Mahasiswa</option>
                                             <option value="Lainnya">Lainnya (sebutkan)</option>
                                         </select>
-                                        <label>6. Pekerjaan / status utama pemilik usaha *</label>
+                                        <label>6. Pekerjaan / status utama pemilik usaha <span class="text-danger">*</span></label>
                                     </div>
                                 </div>
                                 <div class="col-md-12 d-none" id="pekerjaan_lainnya_wrapper">
@@ -217,15 +409,18 @@
 
                                 <div class="col-12">
                                     <div class="form-group mb-2">
-                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <div class="d-flex flex-column flex-md-row justify-content-md-between align-items-md-center mb-2 gap-2">
                                             <label class="fw-bold text-muted small text-uppercase mb-0">5. Alamat lengkap tempat usaha</label>
-                                            <button type="button" class="btn btn-sm btn-primary shadow-sm" id="btn-lokasi-saya"><i class="fas fa-map-marker-alt me-1"></i> Gunakan Lokasi Saya</button>
+                                            <button type="button" class="btn btn-primary shadow-sm" id="btn-lokasi-saya">
+                                                <i class="fas fa-map-marker-alt me-1"></i> Gunakan Lokasi Saya
+                                            </button>
                                         </div>
+                                        <p class="small text-muted mb-2"><em><i class="fas fa-info-circle me-1"></i> Geser pin atau klik pada peta untuk menentukan lokasi. Jika usaha sepenuhnya online (tidak ada lokasi fisik), kolom alamat dan koordinat dapat dikosongkan.</em></p>
+                                        
                                         <textarea name="alamat_usaha" class="form-control mb-3" rows="2" placeholder="Nama jalan, nomor, RT/RW, patokan..."></textarea>
                                         
                                         <!-- MAP PICKER -->
-                                        <div id="map" style="height: 300px; border-radius: 12px; border: 2px solid #eee;" class="mb-2"></div>
-                                        <p class="small text-muted"><i class="fas fa-info-circle me-1"></i> Geser pin atau klik pada peta untuk menentukan lokasi tepat Anda. <br> <strong>Catatan:</strong> Jika usaha Anda sepenuhnya online dan tidak memiliki lokasi fisik, kolom alamat dan koordinat dapat dikosongkan.</p>
+                                        <div id="map" style="height: 300px; border-radius: 12px; border: 2px solid #eee;" class="mb-3"></div>
                                         
                                         <input type="hidden" name="latitude" id="lat">
                                         <input type="hidden" name="longitude" id="lng">
@@ -260,14 +455,14 @@
                             <div class="row g-3">
                                 <div class="col-12">
                                     <div class="form-group mb-3">
-                                        <label class="fw-bold text-muted small text-uppercase">7. Nama usaha / merek dagang</label>
+                                        <label class="fw-bold text-muted small text-uppercase mb-1">7. Nama usaha / merek dagang</label>
+                                        <p class="small text-muted mb-2"><em>Jika tidak memiliki nama usaha resmi, tuliskan produk atau jasa utama yang Anda jual.</em></p>
                                         <input type="text" name="kegiatan_utama" class="form-control" placeholder="Contoh: Bubur Ayam Pak Lukman, Toko Online Batik Mempawah...">
-                                        <small class="text-muted">Jika tidak memiliki nama usaha resmi, tuliskan produk atau jasa utama yang Anda jual.</small>
                                     </div>
                                 </div>
                                 <div class="col-md-12">
                                     <div class="form-group mb-3">
-                                        <label class="fw-bold text-muted small text-uppercase">8. Kategori usaha utama *</label>
+                                        <label class="fw-bold text-muted small text-uppercase">8. Kategori usaha utama <span class="text-danger">*</span></label>
                                         <select name="jenis_usaha" class="form-select" required>
                                             <option value="">Pilih Kategori</option>
                                             <option value="Produksi barang sendiri">Produksi barang sendiri (kerajinan, pertanian/agribisnis, manufaktur rumahan, dll)</option>
@@ -284,7 +479,7 @@
 
                                 <div class="col-md-6">
                                     <div class="form-group mb-3">
-                                        <label class="fw-bold text-muted small text-uppercase">9. Jumlah tenaga kerja (termasuk pemilik) *</label>
+                                        <label class="fw-bold text-muted small text-uppercase">9. Jumlah tenaga kerja (termasuk pemilik) <span class="text-danger">*</span></label>
                                         <select name="jumlah_tk" class="form-select" required>
                                             <option value="">Pilih Jumlah</option>
                                             <option value="Hanya saya sendiri">Hanya saya sendiri (usaha solo)</option>
@@ -297,7 +492,7 @@
 
                                 <div class="col-md-6">
                                     <div class="form-group mb-3">
-                                        <label class="fw-bold text-muted small text-uppercase">10. Tahun mulai beroperasi *</label>
+                                        <label class="fw-bold text-muted small text-uppercase">10. Tahun mulai beroperasi <span class="text-danger">*</span></label>
                                         <select name="tahun_mulai" class="form-select" required>
                                             <option value="">Pilih Tahun</option>
                                             <option value="Sebelum 2020">Sebelum 2020</option>
@@ -310,7 +505,7 @@
 
                                 <div class="col-md-12">
                                     <div class="form-group mb-3">
-                                        <label class="fw-bold text-dark mb-1">11. Estimasi omset (penerimaan kotor) usaha per bulan *</label>
+                                        <label class="fw-bold text-dark mb-1">11. Estimasi omset (penerimaan kotor) usaha per bulan <span class="text-danger">*</span></label>
                                         <p class="text-muted small mb-2"><em>Omset = total penerimaan dari penjualan barang/jasa SEBELUM dikurangi biaya apapun. Bukan keuntungan bersih.</em></p>
                                         <select name="omzet" class="form-select" required>
                                             <option value="">Pilih Rentang Omset</option>
@@ -327,7 +522,7 @@
 
                                 <div class="col-md-12">
                                     <div class="form-group mb-3">
-                                        <label class="fw-bold text-muted small text-uppercase">12. Status legalitas usaha *</label>
+                                        <label class="fw-bold text-muted small text-uppercase">12. Status legalitas usaha <span class="text-danger">*</span></label>
                                         <select name="legalitas" class="form-select" required>
                                             <option value="">Pilih Legalitas</option>
                                             <option value="Belum memiliki legalitas apapun">Belum memiliki legalitas apapun</option>
@@ -355,14 +550,22 @@
                             <!-- BRIDGE QUESTION D0 -->
                             <div class="card bg-light border-0 rounded-4 mb-4">
                                 <div class="card-body p-4">
-                                    <label class="fw-bold text-dark mb-2">D0. Apakah usaha Anda memanfaatkan saluran digital (internet, media sosial, marketplace, aplikasi pembayaran, dll) dalam kegiatan penjualan atau operasionalnya? *</label>
-                                    <div class="form-check mb-2">
-                                        <input class="form-check-input" type="radio" name="use_digital" id="useDigitalYa" value="ya" checked>
-                                        <label class="form-check-label" for="useDigitalYa">Ya — usaha saya menggunakan saluran digital</label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="use_digital" id="useDigitalTidak" value="tidak">
-                                        <label class="form-check-label" for="useDigitalTidak">Tidak — usaha saya sepenuhnya offline</label>
+                                    <label class="fw-bold text-dark mb-3">D0. Apakah usaha Anda memanfaatkan saluran digital (internet, media sosial, marketplace, aplikasi pembayaran, dll) dalam kegiatan penjualan atau operasionalnya? <span class="text-danger">*</span></label>
+                                    <div class="card-input-group">
+                                        <label class="card-input">
+                                            <input type="radio" name="use_digital" id="useDigitalYa" value="ya" checked>
+                                            <div class="card-input-content">
+                                                <div class="card-input-radio-icon"></div>
+                                                <div class="card-input-label">Ya — usaha saya menggunakan saluran digital</div>
+                                            </div>
+                                        </label>
+                                        <label class="card-input">
+                                            <input type="radio" name="use_digital" id="useDigitalTidak" value="tidak">
+                                            <div class="card-input-content">
+                                                <div class="card-input-radio-icon"></div>
+                                                <div class="card-input-label">Tidak — usaha saya sepenuhnya offline</div>
+                                            </div>
+                                        </label>
                                     </div>
                                 </div>
                             </div>
@@ -371,33 +574,39 @@
                                 <div class="row g-3">
                                     <!-- PLATFORM -->
                                     <div class="col-12 py-2">
-                                        <label class="fw-bold text-muted small text-uppercase mb-2">13. Platform digital yang digunakan untuk usaha *</label>
-                                        <div class="bg-light p-3 rounded-3 border-start border-warning border-4">
+                                        <label class="fw-bold text-muted small text-uppercase mb-2">13. Platform digital yang digunakan untuk usaha <span class="text-danger">*</span></label>
+                                        <div class="card-input-group grid-layout">
                                             @foreach(['Marketplace (Shopee, Tokopedia, Lazada, Bukalapak, dll)', 'TikTok Shop / live commerce', 'Instagram / Facebook (feed, story, atau DM)', 'WhatsApp Business', 'WhatsApp pribadi', 'Platform freelance (Fiverr, Upwork, dll)', 'Website / toko online sendiri', 'Lainnya'] as $item)
-                                            <div class="form-check mb-1">
-                                                <input class="form-check-input" type="checkbox" name="platform_digital_v2[]" value="{{ $item }}" id="plat_{{ $loop->index }}">
-                                                <label class="form-check-label" for="plat_{{ $loop->index }}">{{ $item }}</label>
-                                            </div>
+                                            <label class="card-input">
+                                                <input type="checkbox" name="platform_digital_v2[]" value="{{ $item }}" id="plat_{{ $loop->index }}">
+                                                <div class="card-input-content">
+                                                    <div class="card-input-check-icon"></div>
+                                                    <div class="card-input-label">{{ $item }}</div>
+                                                </div>
+                                            </label>
                                             @endforeach
                                         </div>
                                     </div>
 
                                     <!-- SUMBER PENGHASILAN -->
                                     <div class="col-12">
-                                        <label class="fw-bold text-muted small text-uppercase mb-2">14. Sumber penghasilan dari aktivitas digital *</label>
-                                        <div class="bg-light p-3 rounded-3 border-start border-warning border-4">
+                                        <label class="fw-bold text-muted small text-uppercase mb-2">14. Sumber penghasilan dari aktivitas digital <span class="text-danger">*</span></label>
+                                        <div class="card-input-group grid-layout">
                                             @foreach(['Penjualan produk / barang', 'Penjualan jasa / layanan', 'Komisi afiliasi (affiliate marketing)', 'Pendapatan iklan (Google Adsense, YouTube, dll)', 'Live streaming (gift, donasi, komisi live)', 'Lainnya'] as $item)
-                                            <div class="form-check mb-1">
-                                                <input class="form-check-input" type="checkbox" name="sumber_penghasilan_digital[]" value="{{ $item }}" id="income_{{ $loop->index }}">
-                                                <label class="form-check-label" for="income_{{ $loop->index }}">{{ $item }}</label>
-                                            </div>
+                                            <label class="card-input">
+                                                <input type="checkbox" name="sumber_penghasilan_digital[]" value="{{ $item }}" id="income_{{ $loop->index }}">
+                                                <div class="card-input-content">
+                                                    <div class="card-input-check-icon"></div>
+                                                    <div class="card-input-label">{{ $item }}</div>
+                                                </div>
+                                            </label>
                                             @endforeach
                                         </div>
                                     </div>
 
                                     <!-- LAMA DIGITAL -->
                                     <div class="col-md-6 mb-3">
-                                        <label class="fw-bold text-muted small text-uppercase mb-2">15. Sudah berapa lama memanfaatkan saluran digital? *</label>
+                                        <label class="fw-bold text-muted small text-uppercase mb-2">15. Sudah berapa lama memanfaatkan saluran digital? <span class="text-danger">*</span></label>
                                         <select name="lama_aktivitas_digital" class="form-select">
                                             <option value="">Pilih Lama Menggunakan</option>
                                             <option value="Kurang dari 6 bulan">Kurang dari 6 bulan</option>
@@ -410,7 +619,7 @@
 
                                     <!-- DAMPAK DIGITAL -->
                                     <div class="col-md-6 mb-3">
-                                        <label class="fw-bold text-muted small text-uppercase mb-2">16. Apakah digital meningkatkan omset? *</label>
+                                        <label class="fw-bold text-muted small text-uppercase mb-2">16. Apakah digital meningkatkan omset? <span class="text-danger">*</span></label>
                                         <select name="tambah_penghasilan_digital" class="form-select">
                                             <option value="">Pilih Pengaruh</option>
                                             <option value="Ya, meningkatkan secara signifikan">Ya, meningkatkan omset secara signifikan</option>
@@ -423,22 +632,25 @@
 
                                     <!-- PEMBAYARAN -->
                                     <div class="col-12 py-2">
-                                        <label class="fw-bold text-muted small text-uppercase mb-2">17. Metode pembayaran digital yang diterima *</label>
-                                        <div class="bg-light p-3 rounded-3 border-start border-warning border-4">
+                                        <label class="fw-bold text-muted small text-uppercase mb-2">17. Metode pembayaran digital yang diterima <span class="text-danger">*</span></label>
+                                        <div class="card-input-group grid-layout">
                                             @foreach(['QRIS (stiker / QR code)', 'Transfer mobile banking / internet banking', 'Dompet digital (GoPay/OVO/Dana/dll)', 'COD (bayar di tempat via kurir)', 'Hanya menerima tunai', 'Lainnya'] as $item)
-                                            <div class="form-check mb-1">
-                                                <input class="form-check-input" type="checkbox" name="metode_pembayaran_digital[]" value="{{ $item }}" id="pay_{{ $loop->index }}">
-                                                <label class="form-check-label" for="pay_{{ $loop->index }}">{{ $item }}</label>
-                                            </div>
+                                            <label class="card-input">
+                                                <input type="checkbox" name="metode_pembayaran_digital[]" value="{{ $item }}" id="pay_{{ $loop->index }}">
+                                                <div class="card-input-content">
+                                                    <div class="card-input-check-icon"></div>
+                                                    <div class="card-input-label">{{ $item }}</div>
+                                                </div>
+                                            </label>
                                             @endforeach
                                         </div>
                                     </div>
 
                                     <!-- KENDALA -->
                                     <div class="col-12 py-2">
-                                        <label class="fw-bold text-muted small text-uppercase mb-1">18. Kendala utama dalam menjalankan usaha digital *</label>
+                                        <label class="fw-bold text-muted small text-uppercase mb-1">18. Kendala utama dalam menjalankan usaha digital <span class="text-danger">*</span></label>
                                         <p class="text-muted small mb-2"><em>Silakan pilih maksimal 3 kendala yang paling dirasakan.</em></p>
-                                        <div class="bg-light p-3 rounded-3 border-start border-warning border-4">
+                                        <div class="card-input-group grid-layout">
                                             @foreach([
                                                 'Modal / pembiayaan',
                                                 'Keterbatasan akses internet / sinyal',
@@ -451,13 +663,16 @@
                                                 'Tidak ada kendala signifikan',
                                                 'Lainnya'
                                             ] as $item)
-                                            <div class="form-check mb-1">
-                                                <input class="form-check-input kendala-cb" type="checkbox" name="kendala[]" value="{{ $item }}" id="kendala_{{ $loop->index }}" {{ $item == 'Lainnya' ? 'onclick=toggleKendalaLainnya(this.checked)' : '' }}>
-                                                <label class="form-check-label" for="kendala_{{ $loop->index }}">{{ $item }}</label>
-                                            </div>
+                                            <label class="card-input">
+                                                <input type="checkbox" class="kendala-cb" name="kendala[]" value="{{ $item }}" id="kendala_{{ $loop->index }}" {{ $item == 'Lainnya' ? 'onclick=toggleKendalaLainnya(this.checked)' : '' }}>
+                                                <div class="card-input-content">
+                                                    <div class="card-input-check-icon"></div>
+                                                    <div class="card-input-label">{{ $item }}</div>
+                                                </div>
+                                            </label>
                                             @endforeach
                                             <div id="kendala_lainnya_wrapper" class="mt-2 d-none">
-                                                <input type="text" name="kendala_lainnya" class="form-control form-control-sm" placeholder="Sebutkan kendala lainnya...">
+                                                <input type="text" name="kendala_lainnya" class="form-control" placeholder="Sebutkan kendala lainnya...">
                                             </div>
                                         </div>
                                     </div>
@@ -479,26 +694,35 @@
                             <div class="card mb-4 border-2">
                                 <div class="card-body">
                                     <div class="mb-4">
-                                        <label class="fw-bold text-dark mb-2">19. Apakah Anda sudah atau akan dikunjungi petugas Sensus Ekonomi 2026 secara langsung? *</label>
-                                        <select name="se2026_visit" class="form-select" required>
-                                            <option value="">Pilih Jawaban</option>
-                                            <option value="Sudah dikunjungi petugas SE2026">Sudah dikunjungi petugas SE2026</option>
-                                            <option value="Belum dikunjungi, tapi tahu akan dikunjungi">Belum dikunjungi, tapi tahu akan dikunjungi</option>
-                                            <option value="Belum dikunjungi dan tidak tahu">Belum dikunjungi dan tidak tahu</option>
-                                            <option value="Tidak tahu">Tidak tahu</option>
-                                        </select>
+                                        <label class="fw-bold text-dark mb-3">19. Apakah Anda sudah atau akan dikunjungi petugas Sensus Ekonomi 2026 secara langsung? <span class="text-danger">*</span></label>
+                                        <div class="card-input-group">
+                                            @foreach([
+                                                'Sudah dikunjungi petugas SE2026',
+                                                'Belum dikunjungi, tapi tahu akan dikunjungi',
+                                                'Belum dikunjungi dan tidak tahu',
+                                                'Tidak tahu'
+                                            ] as $item)
+                                            <label class="card-input">
+                                                <input type="radio" name="se2026_visit" value="{{ $item }}" required>
+                                                <div class="card-input-content">
+                                                    <div class="card-input-radio-icon"></div>
+                                                    <div class="card-input-label">{{ $item }}</div>
+                                                </div>
+                                            </label>
+                                            @endforeach
+                                        </div>
                                     </div>
 
                                     <hr>
 
-                                    <label class="fw-bold mb-3 d-block">20. Unggah foto tempat usaha atau produk utama (Opsional)</label>
+                                    <label class="fw-bold mb-1 d-block">20. Unggah foto tempat usaha atau produk utama (Opsional)</label>
+                                    <p class="small text-muted mb-3"><em>Format: JPG/PNG, Maks 5MB. Boleh dikosongkan jika tidak tersedia.</em></p>
                                     <div class="upload-zone text-center p-4 border rounded-3 bg-light">
                                         <i class="fas fa-store fa-3x text-muted mb-2 me-3"></i>
                                         <i class="fas fa-box-open fa-3x text-muted mb-2"></i>
                                         <div class="mt-3">
                                             <input type="file" name="foto_rumah" class="form-control" accept="image/*" id="foto_rumah_input">
                                         </div>
-                                        <p class="small text-muted mt-2">Format: JPG/PNG, Maks 5MB. Boleh dikosongkan jika tidak ada.</p>
                                     </div>
                                 </div>
                             </div>

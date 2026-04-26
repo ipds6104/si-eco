@@ -1,0 +1,8 @@
+services:
+  app:
+    environment:
+      - WATCH=${WATCH:-false}
+    volumes:
+      - .:/app
+      # We re-bind storage to ensure it doesn't get overwritten by the local mapping
+      - storage_data:/app/storage
