@@ -1,22 +1,21 @@
 # CAIKUE (Catatan Industri dan Kuesioner Ekonomi Digital)
 
-Aplikasi manajemen kuesioner dan pendataan industri digital yang dioptimalkan untuk performa tinggi dan kemudahan distribusi. **CAIKUE** dirancang untuk memudahkan pengumpulan data lapangan secara publik melalui integrasi WhatsApp dan sistem formulir dinamis.
+Aplikasi **Identifikasi dan Pemetaan** ekonomi digital yang dioptimalkan untuk performa tinggi dan kemudahan distribusi. **CAIKUE** dirancang untuk memudahkan pengumpulan data lapangan secara publik guna memitigasi *undercoverage* dalam Sensus Ekonomi 2026 melalui integrasi WhatsApp dan sistem formulir dinamis yang responsif.
 
 ## 🚀 Fitur Unggulan
 
-- **Public Questionnaire Access:** Kuesioner dapat diakses oleh siapa saja tanpa perlu login, memudahkan distribusi via WhatsApp.
-- **WhatsApp Share Integration:** Fitur bagikan link kuesioner langsung dari Dashboard Admin.
-- **Multi-Form System:** Mendukung banyak kuesioner sekaligus dengan link unik untuk setiap form.
+- **Identifikasi & Pemetaan:** Dirancang khusus untuk menjaring pelaku usaha digital yang belum terdata secara komprehensif.
+- **UX Mobile-First:** Kuesioner menggunakan sistem *Radio/Checkbox Cards* yang ramah jempol dan responsif di berbagai perangkat.
+- **Psychological Nudges:** Dilengkapi dengan estimasi waktu pengisian (± 3 Menit) dan fitur *Viral Loop* (Bagikan ke WhatsApp) untuk meningkatkan partisipasi.
 - **High Performance Engine:** Berjalan di atas **FrankenPHP** dan **Laravel Octane** (Worker Mode) untuk respon server yang instan.
-- **Dynamic Form Builder:** Buat dan sesuaikan formulir pendataan Anda sendiri melalui antarmuka admin.
-- **Export Powerhouse:** Rekap data otomatis ke format **Excel** dan **PDF**.
+- **Hot Reload Development:** Dukungan penuh untuk *real-time updates* saat pengembangan menggunakan Vite dan Octane Watch mode.
 
 ## 🛠️ Teknologi (High-Performance Stack)
 
 - **Runtime:** [FrankenPHP](https://frankenphp.dev/) (Modern PHP App Server)
-- **Engine:** [Laravel 13](https://laravel.com/docs/13.x) + [Laravel Octane](https://laravel.com/docs/13.x/octane)
+- **Engine:** [Laravel 13.0](https://laravel.com/docs/13.x) + [Laravel Octane](https://laravel.com/docs/13.x/octane)
 - **Frontend:** Tailwind CSS, Alpine.js, Vite
-- **Infrastructure:** Docker & Docker Compose
+- **Infrastructure:** Docker & Docker Compose (Separated Dev/Prod configs)
 
 ## ⚙️ Panduan Instalasi Cepat (Docker)
 
@@ -35,23 +34,21 @@ Aplikasi ini sudah dioptimalkan menggunakan Docker. Anda tidak perlu menginstal 
    ./init.sh
    ```
 
-3. **Akses Aplikasi:**
-   - **Aplikasi Utama:** [http://localhost:8100](http://localhost:8100)
-   - **Public Questionnaire:** [http://localhost:8100/isi-kuesioner](http://localhost:8100/isi-kuesioner)
-   - **Mail Viewer (Testing):** [http://localhost:8180](http://localhost:8180)
+3. **Mode Pengembangan (Hot Reload):**
+   Gunakan flag `--watch` untuk mengaktifkan fitur *Auto-Reload* saat Anda mengubah kode (PHP, Blade, atau CSS).
+   ```bash
+   ./init.sh --watch
+   ```
 
-## 🐳 Perintah Docker yang Sering Digunakan
+4. **Akses Aplikasi:**
+   - **Aplikasi Utama:** [http://127.0.0.1:8100](http://127.0.0.1:8100)
+   - **Formulir Kuesioner:** [http://127.0.0.1:8100/isi-kuesioner](http://127.0.0.1:8100/isi-kuesioner)
 
-- **Menjalankan Server:** `docker compose up -d`
-- **Melihat Log:** `docker compose logs -f app`
-- **Reset Database (Fresh):** `./init.sh --fresh`
-- **Masuk ke Shell Container:** `docker compose exec app bash`
+## 🐳 Manajemen Environment
 
-## 📂 Struktur Penting
-- `routes/web.php` : Definisi route publik dan admin.
-- `app/Http/Controllers/KuesionerController.php` : Logic utama kuesioner Ekonomi Digital.
-- `resources/views/kuesioner/` : Template antarmuka kuesioner publik.
-- `docker-compose.yml` : Konfigurasi orkestrasi container (Octane & MySQL).
+Proyek ini menggunakan dua konfigurasi Docker Compose untuk menjaga keamanan produksi:
+- **`docker-compose.yml`**: Konfigurasi bersih untuk **Produksi**. Tidak mengandung *volume mapping* kode sumber.
+- **`docker-compose.dev.yml`**: Konfigurasi khusus **Development**. Memetakan folder lokal ke container dan mengaktifkan fitur *Watch*.
 
 ---
-© 2026 CAIKUE Team - Dikembangkan untuk efisiensi pendataan statistik industri digital.
+© 2026 CAIKUE Team - BPS Kabupaten Mempawah.
