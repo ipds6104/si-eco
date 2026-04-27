@@ -336,7 +336,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-floating mb-3">
-                                        <input type="text" name="nik" id="nik" class="form-control" placeholder="NIK" maxlength="16" required>
+                                        <input type="text" name="nik" id="nik" class="form-control" placeholder="NIK" maxlength="16" pattern="^([1-9][1-9])[0-9]{2}[0-9]{2}(0[1-9]|[12][0-9]|3[01]|4[1-9]|[56][0-9]|7[01])(0[1-9]|1[0-2])[0-9]{2}[0-9]{4}$" required>
                                         <label for="nik">2. NIK (16 Digit) <span class="text-danger">*</span></label>
                                         <div class="form-text small text-muted"><i class="fas fa-shield-alt me-1"></i> NIK dijamin kerahasiaannya dan hanya digunakan untuk deduplikasi data statistik Sensus Ekonomi 2026.</div>
                                     </div>
@@ -474,6 +474,38 @@
                                             <option value="Pertanian / perikanan / perkebunan">Pertanian / perikanan / perkebunan (dijual langsung tanpa pengolahan)</option>
                                             <option value="Lainnya">Lainnya (sebutkan)</option>
                                         </select>
+                                    </div>
+                                </div>
+
+                                <!-- Rincian Kegiatan Usaha (Untuk Penentuan KBLI) -->
+                                <div class="col-12 mt-2">
+                                    <div class="alert alert-light border-start border-warning border-4 shadow-sm mb-3">
+                                        <h6 class="fw-bold text-dark mb-2"><i class="fas fa-info-circle text-warning me-2"></i>Rincian Kegiatan Usaha (Penentuan KBLI)</h6>
+                                        <p class="small text-muted mb-0">Tiga pertanyaan di bawah ini (8a, 8b, 8c) sangat penting untuk menentukan kode <strong>Klasifikasi Baku Lapangan Usaha Indonesia (KBLI) 2020</strong> dari usaha Anda secara spesifik.</p>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-12">
+                                    <div class="form-group mb-3">
+                                        <label class="fw-bold text-dark mb-1">8a. Bahan Baku / Input Utama <span class="text-danger">*</span></label>
+                                        <p class="text-muted small mb-2"><em>Bahan dasar yang Anda beli dan gunakan. <br><strong>Contoh:</strong> Kain dan benang (untuk penjahit), Tepung dan ayam (warung makan), Barang jadi (toko kelontong), Tidak ada bahan baku (untuk jasa pijat/desain).</em></p>
+                                        <textarea name="input_usaha" class="form-control" rows="2" placeholder="Sebutkan bahan baku/input utama..." required></textarea>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-12">
+                                    <div class="form-group mb-3">
+                                        <label class="fw-bold text-dark mb-1">8b. Proses Usaha Utama <span class="text-danger">*</span></label>
+                                        <p class="text-muted small mb-2"><em>Cara Anda mengolah bahan baku atau menjalankan usaha. <br><strong>Contoh:</strong> Menjahit pola menjadi baju, Memasak dan menggoreng, Membeli lalu menjual kembali, Memberikan layanan jasa desain grafis.</em></p>
+                                        <textarea name="proses_usaha" class="form-control" rows="2" placeholder="Jelaskan proses utama usaha Anda..." required></textarea>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-12">
+                                    <div class="form-group mb-3">
+                                        <label class="fw-bold text-dark mb-1">8c. Produk / Jasa Utama yang Dihasilkan <span class="text-danger">*</span></label>
+                                        <p class="text-muted small mb-2"><em>Hasil akhir yang Anda jual kepada pelanggan (Output). <br><strong>Contoh:</strong> Pakaian wanita, Ayam geprek matang, Berbagai macam sembako, Jasa pembuatan logo.</em></p>
+                                        <textarea name="produk_utama" class="form-control" rows="2" placeholder="Sebutkan produk atau jasa akhir..." required></textarea>
                                     </div>
                                 </div>
 
@@ -1015,17 +1047,22 @@ document.addEventListener("DOMContentLoaded", function () {
             const activeStep = stepContents[currentStep];
             const inputs = activeStep.querySelectorAll('input[required], select[required]');
             let valid = true;
+            let errorMessage = 'Mohon lengkapi semua field wajib diisi.';
             inputs.forEach(i => {
                 if (!i.value) {
                     i.classList.add('is-invalid');
                     valid = false;
+                } else if (i.name === 'nik' && !/^([1-9][1-9])[0-9]{2}[0-9]{2}(0[1-9]|[12][0-9]|3[01]|4[1-9]|[56][0-9]|7[01])(0[1-9]|1[0-2])[0-9]{2}[0-9]{4}$/.test(i.value)) {
+                    i.classList.add('is-invalid');
+                    valid = false;
+                    errorMessage = 'Format NIK tidak valid. Pastikan 16 digit dengan kode wilayah dan tanggal lahir yang benar.';
                 } else {
                     i.classList.remove('is-invalid');
                 }
             });
 
             if (!valid) {
-                 Swal.fire('Perhatian', 'Mohon lengkapi semua field wajib diisi.', 'warning');
+                 Swal.fire('Perhatian', errorMessage, 'warning');
                  return;
             }
 

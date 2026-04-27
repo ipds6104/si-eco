@@ -23,6 +23,12 @@ class KuesionerController extends Controller
 
     public function store(Request $request)
     {
+        $request->validate([
+            'nik' => ['required', 'regex:/^([1-9][1-9])[0-9]{2}[0-9]{2}(0[1-9]|[12][0-9]|3[01]|4[1-9]|[56][0-9]|7[01])(0[1-9]|1[0-2])[0-9]{2}[0-9]{4}$/']
+        ], [
+            'nik.regex' => 'Format NIK tidak valid. Pastikan 16 digit sesuai dengan kode wilayah dan tanggal lahir.'
+        ]);
+
         $data = $request->all();
 
         // Handle File Upload
@@ -76,6 +82,12 @@ class KuesionerController extends Controller
 
     public function update(Request $request, $id)
     {
+        $request->validate([
+            'nik' => ['required', 'regex:/^([1-9][1-9])[0-9]{2}[0-9]{2}(0[1-9]|[12][0-9]|3[01]|4[1-9]|[56][0-9]|7[01])(0[1-9]|1[0-2])[0-9]{2}[0-9]{4}$/']
+        ], [
+            'nik.regex' => 'Format NIK tidak valid. Pastikan 16 digit sesuai dengan kode wilayah dan tanggal lahir.'
+        ]);
+
         $data = Kuesioner::findOrFail($id);
         $updateData = $request->all();
 
