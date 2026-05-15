@@ -51,6 +51,7 @@
             <tr>
                 <th>No</th>
                 <th>Nama</th>
+                <th>Petugas/Pengisi</th>
                 <th>Wilayah (Desa/RT)</th>
                 <th>Kepemilikan Usaha</th>
                 <th>Kegiatan Utama</th>
@@ -68,6 +69,12 @@
                 <td>{{ $data->firstItem() + $loop->index }}</td>
 
                 <td>{{ $item->nama }}</td>
+                <td>
+                    <small class="d-block fw-bold">{{ $item->status_pengisi ?? 'Pemilik' }}</small>
+                    @if($item->nama_pengisi_detail)
+                        <small class="text-primary">{{ $item->nama_pengisi_detail }}</small>
+                    @endif
+                </td>
 
                 <td>
                     <small class="d-block fw-bold text-primary">{{ $item->desa->name ?? '-' }}</small>

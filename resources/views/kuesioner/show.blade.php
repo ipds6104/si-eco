@@ -36,9 +36,15 @@
                     <div class="mb-3">
                         <label class="text-muted small d-block">Status Pengisi</label>
                         <span class="badge bg-secondary mb-2">{{ $data->status_pengisi ?? 'Pemilik Usaha' }}</span>
+                        @if($data->nama_pengisi_detail)
+                            <div class="mt-1">
+                                <small class="text-muted d-block">Nama Petugas/Pendamping:</small>
+                                <span class="fw-bold">{{ $data->nama_pengisi_detail }}</span>
+                            </div>
+                        @endif
                     </div>
                     <div class="mb-3">
-                        <label class="text-muted small d-block">Nama Lengkap</label>
+                        <label class="text-muted small d-block">Nama Pemilik / Pelaku Usaha</label>
                         <span class="h6 fw-bold mb-0">{{ $data->nama }}</span>
                     </div>
                     <div>

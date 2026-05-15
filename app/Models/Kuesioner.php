@@ -13,6 +13,7 @@ class Kuesioner extends Model
 
     protected $fillable = [
         'status_pengisi',
+        'nama_pengisi_detail',
         'nama',
         'nik',
         'no_hp',

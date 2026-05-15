@@ -25,10 +25,16 @@
                     <div class="col-md-12">
                         <div class="form-group mb-3">
                             <label class="fw-bold small text-muted text-uppercase mb-1">Status Pengisi</label>
-                            <select name="status_pengisi" class="form-select">
+                            <select name="status_pengisi" id="status_pengisi" class="form-select">
                                 <option value="Pemilik Usaha" {{ $data->status_pengisi == 'Pemilik Usaha' ? 'selected' : '' }}>Pemilik Usaha</option>
                                 <option value="Pendamping/RT" {{ $data->status_pengisi == 'Pendamping/RT' ? 'selected' : '' }}>Pendata / Ketua RT / Pendamping</option>
                             </select>
+                        </div>
+                    </div>
+                    <div class="col-md-12 {{ $data->status_pengisi == 'Pemilik Usaha' ? 'd-none' : '' }}" id="nama_pengisi_detail_wrapper">
+                        <div class="form-group mb-3">
+                            <label class="fw-bold small text-muted text-uppercase mb-1">Nama Petugas/Pendamping</label>
+                            <input type="text" name="nama_pengisi_detail" id="nama_pengisi_detail" class="form-control" value="{{ $data->nama_pengisi_detail }}" placeholder="Masukkan nama petugas...">
                         </div>
                     </div>
                     <div class="col-md-12">
@@ -212,6 +218,21 @@ document.addEventListener("DOMContentLoaded", function() {
     
     usahaSelect.addEventListener('change', function() {
         usahaSection.classList.toggle('d-none', this.value !== 'ya');
+    });
+
+    const statusSelect = document.getElementById('status_pengisi');
+    const statusWrapper = document.getElementById('nama_pengisi_detail_wrapper');
+    const statusInput = document.getElementById('nama_pengisi_detail');
+
+    statusSelect.addEventListener('change', function() {
+        if (this.value === 'Pendamping/RT') {
+            statusWrapper.classList.remove('d-none');
+            statusInput.required = true;
+        } else {
+            statusWrapper.classList.add('d-none');
+            statusInput.required = false;
+            statusInput.value = '';
+        }
     });
 
     const digitalSelect = document.getElementById('use_digital');

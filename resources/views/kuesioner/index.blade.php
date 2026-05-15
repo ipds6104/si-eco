@@ -143,6 +143,22 @@
         .card-input-label {
             font-size: 0.9rem;
         }
+        /* Mobile Spacing & Padding Overrides */
+        .card-body {
+            padding: 1.25rem 1rem !important;
+        }
+        #step-pengantar, .step-content {
+            padding-left: 12px;
+            padding-right: 12px;
+        }
+        .row {
+            margin-left: 0 !important;
+            margin-right: 0 !important;
+        }
+        .row > [class^="col-"] {
+            padding-left: 5px !important;
+            padding-right: 5px !important;
+        }
     }
 </style>
 @endsection
@@ -239,29 +255,9 @@
                         <div class="card bg-light border-0 rounded-4 mb-4">
                             <div class="card-body p-4">
                                 <h5 class="fw-bold text-dark mb-3">BAGIAN 0: SKRINING AWAL</h5>
-                                
-                                <div class="mb-4">
-                                    <label class="fw-bold text-dark mb-3">S1. Apakah Anda atau anggota rumah tangga Anda saat ini memiliki usaha atau kegiatan yang menghasilkan pendapatan, baik secara online maupun offline? <span class="text-danger">*</span></label>
-                                    <div class="card-input-group">
-                                        <label class="card-input">
-                                            <input type="radio" name="punya_usaha" id="skriningYa" value="ya">
-                                            <div class="card-input-content">
-                                                <div class="card-input-radio-icon"></div>
-                                                <div class="card-input-label">Ya — saya memiliki atau terlibat dalam usaha yang menghasilkan pendapatan</div>
-                                            </div>
-                                        </label>
-                                        <label class="card-input">
-                                            <input type="radio" name="punya_usaha" id="skriningTidak" value="tidak">
-                                            <div class="card-input-content">
-                                                <div class="card-input-radio-icon"></div>
-                                                <div class="card-input-label">Tidak — tidak ada kegiatan usaha apapun</div>
-                                            </div>
-                                        </label>
-                                    </div>
-                                </div>
-
-                                <div class="mb-3 d-none" id="skrining_pengisi_wrapper">
-                                    <label class="fw-bold text-dark mb-3">S2. Siapa yang mengisi formulir ini? <span class="text-danger">*</span></label>
+                                                                <!-- S1: Identitas Pengisi -->
+                                <div class="mb-4" id="skrining_pengisi_wrapper">
+                                    <label class="fw-bold text-dark mb-3">S1. Siapa yang mengisi formulir ini? <span class="text-danger">*</span></label>
                                     <div class="card-input-group">
                                         <label class="card-input">
                                             <input type="radio" name="status_pengisi" id="statusPemilikSkrining" value="Pemilik Usaha" checked>
@@ -279,6 +275,37 @@
                                         </label>
                                     </div>
                                 </div>
+
+                                <!-- S2: Nama Petugas (Conditional) -->
+                                <div class="mb-4 d-none animate__animated animate__fadeIn" id="nama_pengisi_detail_wrapper">
+                                    <label class="fw-bold text-dark mb-3">S2. Nama Petugas Pendataan / Ketua RT / Pendamping <span class="text-danger">*</span></label>
+                                    <div class="form-floating">
+                                        <input type="text" name="nama_pengisi_detail" id="nama_pengisi_detail" class="form-control" placeholder="Masukkan nama Anda...">
+                                        <label for="nama_pengisi_detail">Masukkan nama lengkap Anda...</label>
+                                    </div>
+                                    <div class="form-text small text-muted mt-2"><i class="fas fa-info-circle me-1"></i> Identitas petugas diperlukan untuk verifikasi pendataan di lapangan.</div>
+                                </div>
+
+                                <!-- S3: Skrining Usaha -->
+                                <div class="mb-4" id="skrining_usaha_wrapper">
+                                    <label class="fw-bold text-dark mb-3">S3. Apakah Anda atau warga yang didatangi saat ini memiliki usaha yang menghasilkan pendapatan? <span class="text-danger">*</span></label>
+                                    <div class="card-input-group">
+                                        <label class="card-input">
+                                            <input type="radio" name="punya_usaha" id="skriningYa" value="ya">
+                                            <div class="card-input-content">
+                                                <div class="card-input-radio-icon"></div>
+                                                <div class="card-input-label">Ya — ada kegiatan usaha (Online/Offline)</div>
+                                            </div>
+                                        </label>
+                                        <label class="card-input">
+                                            <input type="radio" name="punya_usaha" id="skriningTidak" value="tidak">
+                                            <div class="card-input-content">
+                                                <div class="card-input-radio-icon"></div>
+                                                <div class="card-input-label">Tidak — tidak ada kegiatan usaha apapun</div>
+                                            </div>
+                                        </label>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
@@ -290,7 +317,7 @@
                     </div>
 
                     <!-- KUESIONER FORM WRAPPER -->
-                    <div id="kuesioner-wrapper" class="d-none animate__animated animate__fadeIn">
+                    <div id="kuesioner-wrapper" class="d-none animate__animated animate__fadeIn px-3">
                         <!-- STEP INDICATOR -->
                         <div class="step-indicator mb-4">
                             <div class="step-line"></div>
@@ -826,46 +853,112 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
-    // --- SCREENING LOGIC ---
-    const skriningUsaha = document.querySelectorAll('input[name="punya_usaha"]');
-    const skriningPengisiWrapper = document.getElementById('skrining_pengisi_wrapper');
+    function updateNihilUI() {
+        if (window.isNihilMode) {
+            // Change Step 1 "Selanjutnya" button to "Kirim Laporan Nihil"
+            const step0 = stepContents[0];
+            const nextBtn = step0.querySelector('.next-btn');
+            if (nextBtn) {
+                nextBtn.innerHTML = 'Kirim Laporan Nihil <i class="fas fa-paper-plane ms-2"></i>';
+                nextBtn.classList.replace('btn-primary', 'btn-success');
+            }
+        }
+    }
+
+    // --- SCREENING LOGIC (IDENTITY FIRST) ---
+    const statusPengisiRadios = document.querySelectorAll('input[name="status_pengisi"]');
+    const namaPengisiWrapper = document.getElementById('nama_pengisi_detail_wrapper');
+    const namaPengisiInput = document.getElementById('nama_pengisi_detail');
+    const skriningUsahaRadios = document.querySelectorAll('input[name="punya_usaha"]');
     const btnMulai = document.getElementById('btn-mulai-kuesioner');
     
-    skriningUsaha.forEach(radio => {
-        radio.addEventListener('change', function() {
-            if (this.value === 'tidak') {
-                skriningPengisiWrapper.classList.add('d-none');
-                btnMulai.disabled = false;
-                btnMulai.innerHTML = 'Selesai <i class="fas fa-check ms-2"></i>';
-                btnMulai.classList.remove('btn-warning');
-                btnMulai.classList.add('btn-success');
+    function updateSkriningUI() {
+        const selectedStatus = document.querySelector('input[name="status_pengisi"]:checked');
+        const selectedUsaha = document.querySelector('input[name="punya_usaha"]:checked');
+        
+        // Handle Nama Petugas Visibility
+        if (selectedStatus && selectedStatus.value === 'Pendamping/RT') {
+            namaPengisiWrapper.classList.remove('d-none');
+            namaPengisiInput.required = true;
+        } else {
+            namaPengisiWrapper.classList.add('d-none');
+            namaPengisiInput.required = false;
+        }
+
+        // Enable button if all required screening is filled
+        let isValid = selectedStatus && selectedUsaha;
+        if (selectedStatus && selectedStatus.value === 'Pendamping/RT' && !namaPengisiInput.value.trim()) {
+            isValid = false;
+        }
+        btnMulai.disabled = !isValid;
+
+        // Dynamic Button Label
+        if (selectedUsaha && selectedUsaha.value === 'tidak') {
+            if (selectedStatus && selectedStatus.value === 'Pendamping/RT') {
+                btnMulai.innerHTML = 'Lanjutkan Laporan Nihil <i class="fas fa-arrow-right ms-2"></i>';
+                btnMulai.classList.replace('btn-warning', 'btn-info');
+                btnMulai.classList.replace('btn-success', 'btn-info');
             } else {
-                skriningPengisiWrapper.classList.remove('d-none');
-                btnMulai.disabled = false;
-                btnMulai.innerHTML = 'Mulai Isi Kuesioner <i class="fas fa-arrow-right ms-2"></i>';
-                btnMulai.classList.remove('btn-success');
-                btnMulai.classList.add('btn-warning');
+                btnMulai.innerHTML = 'Selesai <i class="fas fa-check ms-2"></i>';
+                btnMulai.classList.replace('btn-warning', 'btn-success');
+                btnMulai.classList.replace('btn-info', 'btn-success');
             }
-        });
-    });
+        } else {
+            btnMulai.innerHTML = 'Mulai Isi Kuesioner <i class="fas fa-arrow-right ms-2"></i>';
+            btnMulai.classList.replace('btn-success', 'btn-warning');
+            btnMulai.classList.replace('btn-info', 'btn-warning');
+        }
+    }
+
+    statusPengisiRadios.forEach(radio => radio.addEventListener('change', updateSkriningUI));
+    skriningUsahaRadios.forEach(radio => radio.addEventListener('change', updateSkriningUI));
+    namaPengisiInput.addEventListener('input', updateSkriningUI);
 
     btnMulai.addEventListener('click', function() {
-        const selectedSkrining = document.querySelector('input[name="punya_usaha"]:checked').value;
-        if (selectedSkrining === 'tidak') {
-            Swal.fire({
-                title: 'Terima Kasih',
-                text: 'Terima kasih atas partisipasi Anda. Karena Anda tidak memiliki kegiatan usaha, Anda tidak perlu melanjutkan pengisian formulir ini.',
-                icon: 'success'
-            }).then(() => {
-                window.location.reload();
-            });
+        const selectedUsaha = document.querySelector('input[name="punya_usaha"]:checked').value;
+        const selectedStatus = document.querySelector('input[name="status_pengisi"]:checked').value;
+
+        if (selectedUsaha === 'tidak') {
+            if (selectedStatus === 'Pendamping/RT') {
+                // Allow Petugas to record Nihil
+                Swal.fire({
+                    title: 'Laporan Nihil',
+                    text: 'Anda akan melaporkan bahwa warga ini tidak memiliki usaha. Silakan lengkapi identitas warga (Nama, NIK, No HP) pada langkah berikutnya sebagai bukti pendataan lapangan.',
+                    icon: 'info',
+                    confirmButtonText: 'Siap, Lanjutkan'
+                }).then(() => {
+                    startKuesioner(true);
+                });
+            } else {
+                // Owner says no business, just finish
+                Swal.fire({
+                    title: 'Terima Kasih',
+                    text: 'Terima kasih atas partisipasi Anda. Karena Anda tidak memiliki kegiatan usaha, data Anda tetap terlindungi namun Anda tidak perlu melanjutkan kuesioner ini.',
+                    icon: 'success'
+                }).then(() => {
+                    window.location.reload();
+                });
+            }
             return;
         }
         
+        startKuesioner(false);
+    });
+
+    function startKuesioner(isNihil) {
         document.getElementById('step-pengantar').classList.add('d-none');
         document.getElementById('kuesioner-wrapper').classList.remove('d-none');
+        
+        if (isNihil) {
+            // Logic for Nihil reporting: 
+            // Only show Step 1 (Identitas), then change "Next" to "Submit Nihil"
+            window.isNihilMode = true;
+            document.querySelector('.next-step').innerHTML = 'Kirim Laporan Nihil <i class="fas fa-paper-plane ms-2"></i>';
+            document.querySelector('.next-step').classList.replace('btn-primary', 'btn-success');
+        }
+        
         updateStep(0);
-    });
+    }
 
     // --- DIGITAL FILTER LOGIC ---
     const useDigitalRadios = document.querySelectorAll('input[name="use_digital"]');
@@ -1088,6 +1181,10 @@ document.addEventListener("DOMContentLoaded", function () {
             proceedToNextStep();
 
             function proceedToNextStep() {
+                if (window.isNihilMode && currentStep === 0) {
+                    kuesForm.submit();
+                    return;
+                }
                 historyStep.push(currentStep);
                 
                 // Skip logic if No Digital (D0)
@@ -1110,6 +1207,7 @@ document.addEventListener("DOMContentLoaded", function () {
 </script>
 
 <style>
+/* Step Indicator Styles */
 .step-indicator { display: flex; justify-content: space-between; position: relative; z-index: 1; }
 .step-line { position: absolute; top: 20px; left: 40px; right: 40px; height: 3px; background: #e9ecef; z-index: -1; }
 .step-item { text-align: center; background: transparent; flex: 1; }
